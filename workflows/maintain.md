@@ -1,6 +1,15 @@
-# Tracker Data
+# Maintain the Tracker
 
-The tracker page is `index.html`, and everything it shows lives in `assets/tracker.json`. Edit the JSON. StashBase shows the change in the tracker within a couple of seconds, even while it's open.
+Keeping the tracker up to date means editing its data, not the page. The tracker page is `index.html`, and everything it shows lives in `assets/tracker.json`. Edit the JSON. StashBase shows the change in the tracker within a couple of seconds, even while it's open.
+
+## Record what I tell you
+
+I can tick things off in the tracker myself, but sometimes I'll just tell you, like "Did legs today, squats felt easy" or "72.4 this morning". Record it, and reply in a sentence.
+
+* A workout I finished: mark it and its exercises done. Whatever I said about it goes in its note, added to what's there, in my words.
+* My weight: a weight entry for that day.
+* Pain: also follow Safety in [AGENTS.md](../AGENTS.md).
+* If I don't say which workout, it's the one planned for that day. If that's still a guess, ask.
 
 ## Editing rules
 

@@ -13,8 +13,7 @@ If my setup message already answers some of these, skip them. If my health answe
 
 Then, in one go:
 
-* Rewrite [profile.md](../context/profile.md) from my answers, under its headings. Drop the example content. Keep it short and specific.
-* Rewrite [training-system.md](../context/training-system.md) for my goal, equipment, and schedule, as in [plan.md](plan.md#training-system).
-* Clear the example out of [tracker.json](../assets/tracker.json): delete every workout, weight entry, week note, and review. Then set `weightUnit`, `targetWeight` (or `null` if my goal has no target weight), `start`, and `restDays`, as in [tracker.md](tracker.md). If I gave you my weight, log it as the first weight entry, dated today.
+* Rewrite [profile.md](../context/profile.md) from my answers to 1, 2, 5, and 6, and [training.md](../context/training.md) from my answers to 3 and 4, under their headings. Drop the example content. Keep both short and specific.
+* Clear the example out of [tracker.json](../assets/tracker.json): delete every workout, weight entry, week note, and review. Then set `weightUnit`, `targetWeight` (or `null` if my goal has no target weight), `start`, and `restDays`, as in [maintain.md](maintain.md). If I gave you my weight, log it as the first weight entry, dated today.
 * Plan my first four weeks, as in [plan.md](plan.md#plan-four-weeks).
 * Tell me it's done in a few sentences: the split, what the first week looks like, and that after each workout I can just tell you how it went. Then tell me to open the tracker to see it.

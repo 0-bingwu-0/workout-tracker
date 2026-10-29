@@ -154,10 +154,10 @@
     mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
   }
   /* The icon overlaps the bottom edge of the banner by half */
-  .fitness-banner + .page .page-icon { position: relative; z-index: 1; margin-top: -52px; }
+  .fitness-banner ~ .page .page-icon { position: relative; z-index: 1; margin-top: -52px; }
   @media (max-width: 640px) {
     .fitness-banner { height: clamp(96px, 24vw, 120px); }
-    .fitness-banner + .page .page-icon { width: 80px; height: 80px; margin-top: -40px; font-size: 68px; line-height: 80px; }
+    .fitness-banner ~ .page .page-icon { width: 80px; height: 80px; margin-top: -40px; font-size: 68px; line-height: 80px; }
   }
 
   /* Page */
@@ -1341,24 +1341,17 @@
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}`;
   }
 
-  // Exercises marked Step up / Step back in a review: reps under 6 move by 1, the rest by 2, never below 1.
-  const shiftTarget = (target, dir) => target.replace(/\d+/g, (n) => {
-    const v = Number(n);
-    return String(Math.max(1, v + dir * (v < 6 ? 1 : 2)));
-  });
-
-  // Use the latest week with workouts as the template and fill every week of next month (each week whose Thursday falls in it).
+  // Copy the latest week with workouts into every week of next month (each week whose Thursday falls in it), exactly as it is.
+  // Changing the plan is the Agent's job; this only saves redoing a month that stays the same.
   function planDraft() {
     const weeks = plannedWeeks();
     if (!weeks.length) return null;
     const last = weeks[weeks.length - 1];
     const target = nextMonthKey(last.month);
-    const calls = data.reviews.weeks[last.key]?.calls || {};
     const mondays = [];
     let monday = weekStart(parse(`${target}-01`));
     if (ymd(addDays(monday, 3)).slice(0, 7) !== target) monday = addDays(monday, 7);
     for (; ymd(addDays(monday, 3)).slice(0, 7) === target; monday = addDays(monday, 7)) mondays.push(monday);
-    const changes = new Map();
     const items = mondays.flatMap((start) => last.workouts.map((w) => ({
       id: uid(),
       title: w.title,
@@ -1367,18 +1360,12 @@
       duration: null,
       status: "todo",
       note: "",
-      exercises: w.exercises.map((e) => {
-        const name = e.name.trim();
-        const dir = { up: 1, down: -1 }[calls[name]] || 0;
-        const next = dir ? shiftTarget(e.target, dir) : e.target;
-        if (next !== e.target) changes.set(`${w.type}:${name}`, `${name} (${TYPES[w.type].label}): ${e.target} → ${next}`);
-        return { id: e.id, name: e.name, sets: e.sets, target: next, done: false };
-      }),
+      exercises: w.exercises.map((e) => ({ id: e.id, name: e.name, sets: e.sets, target: e.target, done: false })),
     })));
-    return { source: last.month, target, week: last, mondays, items, changes: [...changes.values()] };
+    return { source: last.month, target, week: last, mondays, items };
   }
 
-  const genButton = (draft) => `<button type="button" class="nbtn" data-act="gen-plan">${icon("plus")}Plan ${monthName(draft.target)} from ${monthName(draft.source)}</button>`;
+  const genButton = (draft) => `<button type="button" class="nbtn" data-act="gen-plan">${icon("plus")}Copy ${monthName(draft.source)}'s last week to ${monthName(draft.target)}</button>`;
 
   // One click plans the month and opens its plan page, with a note and Undo at the top instead of a confirm dialog.
   let justGenerated = null;
@@ -1408,11 +1395,10 @@
   function generatedNote(key) {
     const g = justGenerated;
     if (g?.target !== key) return "";
-    const changes = g.changes.length ? `Rep changes: ${g.changes.map(esc).join("; ")}.` : "All reps carry over.";
     return `<div class="callout green gen-note">
         <span class="emoji" aria-hidden="true">✅</span>
-        <div><strong>Planned ${g.mondays.length} weeks and ${g.items.length} workouts from ${monthName(g.source)} Week ${g.week.n}.</strong>
-          <div class="muted">${changes} To add weight or switch to a harder variation, rename the exercise in the workout.</div></div>
+        <div><strong>Copied ${monthName(g.source)} Week ${g.week.n} into ${g.mondays.length} weeks, ${g.items.length} workouts.</strong>
+          <div class="muted">Everything is copied as it was. To change an exercise or its reps, open the workout and edit it.</div></div>
         <button type="button" class="ghost-btn" data-act="undo-gen">Undo</button>
       </div>`;
   }
@@ -1479,7 +1465,7 @@
     const all = weeks.flatMap((w) => w.workouts);
     // The split comes from this month's workouts: each workout type with the first title it has.
     const split = Object.keys(TYPES).map((type) => all.find((w) => w.type === type && w.title.trim())).filter(Boolean);
-    $("#plan-split").innerHTML = `${split.length ? `Each week: ${split.map((w) => `${tag(TYPES[w.type])} ${esc(w.title)}`).join(" · ")}. ` : ""}The split, rest, and progression rules are in the Training System doc. Click a row to open a workout, or click ✓ to mark it done.`;
+    $("#plan-split").innerHTML = `${split.length ? `Each week: ${split.map((w) => `${tag(TYPES[w.type])} ${esc(w.title)}`).join(" · ")}. ` : ""}Click a row to open a workout, or click ✓ to mark it done.`;
     $("#plan-props").innerHTML = weeks.length ? `
       <div class="prop"><span class="prop-name">${icon("planner")}Dates</span><span class="prop-val">${fmtDate(weeks[0].key)} – ${fmtDate(weeks[weeks.length - 1].end)}</span></div>
       <div class="prop"><span class="prop-name">${icon("list")}Workouts</span><span class="prop-val">${weeks.length} weeks · ${all.length} workouts</span></div>
@@ -1520,7 +1506,7 @@
     if (plannedMonths().includes(next)) {
       nextHtml = `<a class="page-link" href="#/plan/${next}" data-route><span class="pl-icon" aria-hidden="true">📄</span><span class="pl-title">${monthLabel(next)} Training Plan</span></a>`;
     } else if (draft?.source === key) {
-      nextHtml = `<p class="desc">Fills ${monthName(draft.target)} with the schedule from this month's last week (Week ${draft.week.n}). Exercises and reps carry over. Exercises marked Step up in that week's review get 1–2 more reps, and Step back gets 1–2 fewer.</p>${genButton(draft)}`;
+      nextHtml = `<p class="desc">If nothing needs to change, copy this month's last week (Week ${draft.week.n}) into every week of ${monthName(draft.target)}, exactly as it is.</p>${genButton(draft)}`;
     }
     $("#plan-next").innerHTML = `<h2 class="h">Next month</h2>${nextHtml}`;
   }
@@ -1737,7 +1723,7 @@
           ${icon("dumbbell")}<span class="rel-title">${esc(w.title) || "Untitled"}</span>${tag(STATUS[w.status], true)}<span class="rel-date">${fmtDate(w.date)}</span>
         </div>`).join("") || '<p class="desc">No workouts this week.</p>'}</div>
       <h3 class="blk">Exercise changes</h3>
-      ${names.length ? `<p class="desc">Everything stays at Keep. Only change the exercises to step up or step back. Next month's plan adjusts reps from here.</p>
+      ${names.length ? `<p class="desc">Everything stays at Keep. Only mark the exercises to step up or step back next week.</p>
         <div class="tbl-scroll"><table class="ex-table"><tbody>${names.map((name) => `<tr>
           <td>${esc(name)}</td>
           <td class="c-call"><span class="tag pick k-${CALLS[r.calls[name] || "keep"].k}"><select data-call="${esc(name)}" aria-label="${esc(name)}: next week">${options(CALLS, r.calls[name] || "keep")}</select></span></td>

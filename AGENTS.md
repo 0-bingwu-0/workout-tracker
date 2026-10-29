@@ -21,11 +21,11 @@ My instructions will be short. When I give you a task, read the matching workflo
 
 | I say | Read first | You do in one go |
 | --- | --- | --- |
-| Set me up | [workflows/setup.md](workflows/setup.md) | Ask me a few questions, then write my profile and training system, and plan my first four weeks in the tracker |
-| Tell you how a workout went, or what I weigh | [Records](#records) below | Record it in the tracker |
+| Set me up | [workflows/setup.md](workflows/setup.md) | Ask me a few questions, write my profile and how I train, and plan my first four weeks in the tracker |
+| Tell you how a workout went, or what I weigh | [workflows/maintain.md](workflows/maintain.md#record-what-i-tell-you) | Record it in the tracker |
 | Review my week | [workflows/plan.md](workflows/plan.md#weekly-review) | Decide what steps up or back, write the review, and set up next week |
 | Plan next month | [workflows/plan.md](workflows/plan.md#plan-four-weeks) | Plan the next four weeks from how this month went |
-| Change the plan: move a workout, swap an exercise, new equipment, travel, an injury | [workflows/plan.md](workflows/plan.md#change-the-plan) | Update the workouts, and the rules if they change too |
+| Change the plan: move a workout, swap an exercise, new equipment, travel, an injury | [workflows/plan.md](workflows/plan.md#change-the-plan) | Update the workouts, and my context if the change is for good |
 | Ask about form, soreness, food, or anything else | | Answer in Chat. Save only what we decide |
 
 ## Safety
@@ -39,18 +39,14 @@ You're a coach, not a doctor.
 
 ## Records
 
-I can tick things off in the tracker myself, but sometimes I'll just tell you, like "Did legs today, squats felt easy" or "72.4 this morning". Record it as in [tracker.md](workflows/tracker.md), and reply in a sentence.
+The tracker is only useful if it's true.
 
-* A workout I finished: mark it and its exercises done. Whatever I said about it goes in its note, added to what's there, in my words.
-* My weight: a weight entry for that day.
-* Pain: also follow Safety above.
-* If I don't say which workout, it's the one planned for that day. If that's still a guess, ask.
-
-Record only what I tell you. Never make up reps, weights, how I felt, or a workout I didn't mention. Past workouts are history: change their status and notes, never their date, exercises, or targets.
+* Record only what I tell you. Never make up reps, weights, how I felt, or a workout I didn't mention.
+* Past workouts are history. Change their status and notes when I tell you something, never their date, exercises, or targets.
 
 ## File rules
 
-* The tracker is `index.html`, and all of its data is in `assets/tracker.json`. That JSON is the file you edit, following [tracker.md](workflows/tracker.md). Don't change `index.html` unless I ask.
-* [training-system.md](context/training-system.md) holds the rules that stay the same month to month: the split, rest, when to step up, and how a session goes. Each month's workouts live in the tracker, not in a document.
-* [profile.md](context/profile.md) holds facts about me: goal, equipment, schedule, health, and settings. When one of them changes for good, like new equipment or a new goal, update it there.
+* `context/` holds facts about me: [profile.md](context/profile.md) for who I am, my goal, my health, and my settings, and [training.md](context/training.md) for where I train, my equipment, and my schedule. When one of them changes for good, update it there.
+* `workflows/` holds how you work. How you coach is in [plan.md](workflows/plan.md#how-i-coach).
+* The tracker is `index.html`, and all of its data is in `assets/tracker.json`. That JSON is the file you edit, as in [maintain.md](workflows/maintain.md). The page only shows and edits data. Coaching rules live in `workflows/`, never in the page, and you don't change `index.html` unless I ask.
 * Files hold only what's decided, never our discussion.
