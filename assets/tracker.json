@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "weightUnit": "kg",
+  "targetWeight": 68,
+  "start": [
+    { "label": "", "text": "Age 33 · 171 cm · 73 kg · almost no training background" },
+    { "label": "Equipment", "text": "2.5 kg and 3.5 kg dumbbells, eight of each (3.5 kg max per hand), a pull-up bar, a sit-up bench, optional resistance bands" },
+    { "label": "Where", "text": "Anywhere, mostly bodyweight, no gym needed" },
+    { "label": "Weight-loss pace", "text": "0.3–0.5 kg a week, to about 67–69 kg in 3 months" },
+    { "label": "Health", "text": "No known conditions. With high blood pressure or a heart condition, check with a doctor first" }
+  ],
+  "restDays": ["Rest", "Rest", "Walk 20–30 min", "Rest", "Walk or full rest", "Rest", "Full rest"],
+  "weekNotes": {
+    "2026-11-02": { "focus": "Learn the moves, find a rhythm", "cardio": "Brisk walk 3× · 20–25 min", "effort": "Stop with 3–4 reps left in each set", "progression": "No step-ups yet. Just note your reps" },
+    "2026-11-09": { "focus": "More reps, bring in dumbbells", "cardio": "Brisk walk 3× · 25–30 min", "effort": "Stop with 2 reps left in each set", "progression": "When all 3 sets of an exercise hit the top of the range, step it up next week following the dumbbell progression" },
+    "2026-11-16": { "focus": "Try harder variations", "cardio": "Brisk walk 3–4× · 30 min", "effort": "Stop with 1–2 reps left in each set", "progression": "Step up following the dumbbell progression" },
+    "2026-11-23": { "focus": "Lock it in and retest", "cardio": "Brisk walk 3× · 25–30 min", "effort": "Stop with 2–3 reps left in each set", "progression": "Record your best and set goals for next month" }
+  },
+  "workouts": [
+    { "id": "w-2026-11-02", "title": "Push + Core", "date": "2026-11-02", "type": "A", "duration": 30, "status": "done", "note": "Push-ups felt OK. Wall handstand negatives got shaky on the last set.", "exercises": [
+      { "id": "e1", "name": "Push-ups", "sets": 3, "target": "5", "done": true },
+      { "id": "e2", "name": "Wall handstand negatives", "sets": 3, "target": "3", "done": true },
+      { "id": "e3", "name": "Leg raises", "sets": 3, "target": "8", "done": true }
+    ] },
+    { "id": "w-2026-11-03", "title": "Legs", "date": "2026-11-03", "type": "B", "duration": 25, "status": "done", "note": "Squats felt easy. Glute bridges burned by the third set.", "exercises": [
+      { "id": "e1", "name": "Squats", "sets": 3, "target": "10", "done": true },
+      { "id": "e2", "name": "Glute bridges", "sets": 3, "target": "8", "done": true }
+    ] },
+    { "id": "w-2026-11-05", "title": "Pull + Core", "date": "2026-11-05", "type": "C", "duration": 30, "status": "done", "note": "Only got 2 pull-ups on the last set, even with the band.", "exercises": [
+      { "id": "e1", "name": "Pull-ups (or band-assisted)", "sets": 3, "target": "3", "done": true },
+      { "id": "e2", "name": "Leg raises", "sets": 3, "target": "8", "done": true }
+    ] },
+    { "id": "w-2026-11-07", "title": "Full Body (Light)", "date": "2026-11-07", "type": "D", "duration": 20, "status": "done", "note": "A bit tired from the week. Kept it light.", "exercises": [
+      { "id": "e1", "name": "Push-ups", "sets": 2, "target": "5", "done": true },
+      { "id": "e2", "name": "Squats", "sets": 2, "target": "10", "done": true },
+      { "id": "e3", "name": "Glute bridges", "sets": 2, "target": "8", "done": true },
+      { "id": "e4", "name": "Leg raises", "sets": 2, "target": "8", "done": true }
+    ] },
+    { "id": "w-2026-11-09", "title": "Push + Core", "date": "2026-11-09", "type": "A", "duration": null, "status": "todo", "note": "", "exercises": [
+      { "id": "e1", "name": "Push-ups", "sets": 3, "target": "6–8", "done": false },
+      { "id": "e2", "name": "Dumbbell shoulder press (2.5 kg)", "sets": 3, "target": "6–8", "done": false },
+      { "id": "e3", "name": "Sit-ups", "sets": 3, "target": "8–10", "done": false }
+    ] },
+    { "id": "w-2026-11-10", "title": "Legs", "date": "2026-11-10", "type": "B", "duration": null, "status": "todo", "note": "", "exercises": [
+      { "id": "e1", "name": "Goblet squats (3.5 kg)", "sets": 3, "target": "10–12", "done": false },
+      { "id": "e2", "name": "Dumbbell Romanian deadlifts (3.5 kg each hand)", "sets": 3, "target": "8–10", "done": false },
+      { "id": "e3", "name": "Lunges (each side, 2.5 kg)", "sets": 3, "target": "6–8", "done": false }
+    ] },
+    { "id": "w-2026-11-12", "title": "Pull + Core", "date": "2026-11-12", "type": "C", "duration": null, "status": "todo", "note": "", "exercises": [
+      { "id": "e1", "name": "Pull-ups (slow negatives or band-assisted)", "sets": 3, "target": "3–4", "done": false },
+      { "id": "e2", "name": "One-arm dumbbell rows (3.5 kg, each side)", "sets": 3, "target": "8–10", "done": false },
+      { "id": "e3", "name": "Decline leg raises (sit-up bench)", "sets": 3, "target": "8–10", "done": false }
+    ] },
+    { "id": "w-2026-11-14", "title": "Full Body (Light)", "date": "2026-11-14", "type": "D", "duration": null, "status": "todo", "note": "", "exercises": [
+      { "id": "e1", "name": "Push-ups", "sets": 2, "target": "6", "done": false },
+      { "id": "e2", "name": "Dumbbell squats (3.5 kg)", "sets": 2, "target": "10", "done": false },
+      { "id": "e3", "name": "Dumbbell overhead press (2.5 kg)", "sets": 2, "target": "8", "done": false },
+      { "id": "e4", "name": "Sit-ups", "sets": 2, "target": "8", "done": false }
+    ] },
+    { "id": "w-2026-11-16", "title": "Push + Core", "date": "2026-11-16", "type": "A", "duration": null, "status": "todo", "note": "", "exercises": [
+      { "id": "e1", "name": "Push-ups", "sets": 3, "target": "8–10", "done": false },
+      { "id": "e2", "name": "Dumbbell shoulder press (3.5 kg)", "sets": 3, "target": "6–8", "done": false },
+      { "id": "e3", "name": "Sit-ups", "sets": 3, "target": "10–12", "done": false }
+    ] },
+    { "id": "w-2026-11-17", "title": "Legs", "date": "2026-11-17", "type": "B", "duration": null, "status": "todo", "note": "", "exercises": [
+      { "id": "e1", "name": "Goblet squats (3.5 kg)", "sets": 3, "target": "12–15", "done": false },
+      { "id": "e2", "name": "Dumbbell Romanian deadlifts (3.5 kg each hand)", "sets": 3, "target": "10–12", "done": false },
+      { "id": "e3", "name": "Lunges (each side, 3.5 kg)", "sets": 3, "target": "8–10", "done": false }
+    ] },
+    { "id": "w-2026-11-19", "title": "Pull + Core", "date": "2026-11-19", "type": "C", "duration": null, "status": "todo", "note": "", "exercises": [
+      { "id": "e1", "name": "Pull-ups (slow negatives or band-assisted)", "sets": 3, "target": "4–5", "done": false },
+      { "id": "e2", "name": "One-arm dumbbell rows (3.5 kg, each side)", "sets": 3, "target": "10–12", "done": false },
+      { "id": "e3", "name": "Decline leg raises (sit-up bench)", "sets": 3, "target": "10–12", "done": false }
+    ] },
+    { "id": "w-2026-11-21", "title": "Full Body (Light)", "date": "2026-11-21", "type": "D", "duration": null, "status": "todo", "note": "", "exercises": [
+      { "id": "e1", "name": "Push-ups", "sets": 2, "target": "8", "done": false },
+      { "id": "e2", "name": "Dumbbell squats (3.5 kg)", "sets": 2, "target": "12", "done": false },
+      { "id": "e3", "name": "Dumbbell overhead press (2.5 kg)", "sets": 2, "target": "8", "done": false },
+      { "id": "e4", "name": "Sit-ups", "sets": 2, "target": "10", "done": false }
+    ] },
+    { "id": "w-2026-11-23", "title": "Push + Core", "date": "2026-11-23", "type": "A", "duration": null, "status": "todo", "note": "", "exercises": [
+      { "id": "e1", "name": "Push-ups", "sets": 3, "target": "8–10", "done": false },
+      { "id": "e2", "name": "Dumbbell shoulder press (3.5 kg)", "sets": 3, "target": "8–10", "done": false },
+      { "id": "e3", "name": "Sit-ups", "sets": 3, "target": "12", "done": false }
+    ] },
+    { "id": "w-2026-11-24", "title": "Legs", "date": "2026-11-24", "type": "B", "duration": null, "status": "todo", "note": "", "exercises": [
+      { "id": "e1", "name": "Goblet squats (3.5 kg)", "sets": 3, "target": "12–15", "done": false },
+      { "id": "e2", "name": "Dumbbell Romanian deadlifts (3.5 kg each hand)", "sets": 3, "target": "12", "done": false },
+      { "id": "e3", "name": "Lunges (each side, 3.5 kg)", "sets": 3, "target": "10", "done": false }
+    ] },
+    { "id": "w-2026-11-26", "title": "Pull + Core", "date": "2026-11-26", "type": "C", "duration": null, "status": "todo", "note": "", "exercises": [
+      { "id": "e1", "name": "Pull-ups (slow negatives or band-assisted)", "sets": 3, "target": "4–5", "done": false },
+      { "id": "e2", "name": "One-arm dumbbell rows (3.5 kg, each side)", "sets": 3, "target": "12", "done": false },
+      { "id": "e3", "name": "Decline leg raises (sit-up bench)", "sets": 3, "target": "12", "done": false }
+    ] },
+    { "id": "w-2026-11-28", "title": "Full Body (Light)", "date": "2026-11-28", "type": "D", "duration": null, "status": "todo", "note": "", "exercises": [
+      { "id": "e1", "name": "Push-ups", "sets": 2, "target": "8", "done": false },
+      { "id": "e2", "name": "Dumbbell squats (3.5 kg)", "sets": 2, "target": "12", "done": false },
+      { "id": "e3", "name": "Dumbbell overhead press (2.5 kg)", "sets": 2, "target": "8", "done": false },
+      { "id": "e4", "name": "Sit-ups", "sets": 2, "target": "10", "done": false }
+    ] }
+  ],
+  "body": [
+    { "id": "b-2026-11-01", "date": "2026-11-01", "weight": 73, "note": "Starting weight. Height 171 cm, waist not measured yet" },
+    { "id": "b-2026-11-08", "date": "2026-11-08", "weight": 72.6, "note": "" },
+    { "id": "b-2026-11-15", "date": "2026-11-15", "weight": null, "note": "" },
+    { "id": "b-2026-11-22", "date": "2026-11-22", "weight": null, "note": "" },
+    { "id": "b-2026-11-29", "date": "2026-11-29", "weight": null, "note": "End-of-month check" }
+  ],
+  "reviews": {
+    "weeks": {
+      "2026-11-02": { "conclusion": "All 4 done. Squats are easy, pull-ups are the hard part.", "calls": {} }
+    },
+    "months": {}
+  }
+}

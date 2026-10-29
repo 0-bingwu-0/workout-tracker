@@ -1,0 +1,2274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workout Tracker</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #ffffff;
+    --text: #37352f;
+    --muted: rgba(55, 53, 47, 0.65);
+    --faint: rgba(55, 53, 47, 0.45);
+    --line: rgba(55, 53, 47, 0.09);
+    --line-strong: rgba(55, 53, 47, 0.22);
+    --hover: rgba(55, 53, 47, 0.06);
+    --hover-soft: rgba(55, 53, 47, 0.03);
+    --card: #ffffff;
+    --card-shadow: rgba(15, 15, 15, 0.07) 0 0 0 1px, rgba(15, 15, 15, 0.07) 0 2px 4px;
+    --pop: #ffffff;
+    --pop-shadow: rgba(15, 15, 15, 0.05) 0 0 0 1px, rgba(15, 15, 15, 0.1) 0 3px 6px, rgba(15, 15, 15, 0.2) 0 9px 24px;
+    --outside: #fbfbfa;
+    --blue: #2383e2;
+    /* Primary buttons use the kettlebell blue (#66a9cf) one shade darker, so white text stays readable and doesn't look disabled. "Today" uses the theme coral. */
+    --accent: #3a86b5;
+    --accent-hover: #2f77a4;
+    --today: #e58283;
+    --track: rgba(55, 53, 47, 0.12);
+    --bar: #86b856;
+    /* Heading colors come from the banner: dumbbell coral, background teal, protein jar yellow, barbell plate green. */
+    /* Semi-transparent, so they sit one shade lighter than the banner on the page background. */
+    --c-coral: rgba(229, 130, 131, 0.42); --c-bell: rgba(179, 227, 223, 0.5);
+    --c-jar: rgba(242, 228, 157, 0.5); --c-lime: rgba(206, 231, 170, 0.5);
+    --c-red: #fdebec; --c-purple: #f6f3f9; --c-blue: #e7f3f8; --c-green: #edf3ec; --c-orange: #fbecdd; --c-gray: #f1f1ef;
+    --t-gray: rgba(227, 226, 224, 0.6); --f-gray: #32302c; --d-gray: #91918e;
+    --t-red: #ffe2dd; --f-red: #5d1715; --d-red: #d44c47;
+    --t-green: #dbeddb; --f-green: #1c3829; --d-green: #6c9b7d;
+    --t-blue: #d3e5ef; --f-blue: #183347; --d-blue: #5b97bd;
+    --t-orange: #fadec9; --f-orange: #49290e; --d-orange: #d9730d;
+    --t-purple: #e8deee; --f-purple: #412454; --d-purple: #9a6dd7;
+    --t-pink: #f5e0e9; --f-pink: #4c2337; --d-pink: #c14c8a;
+    /* Theme tags: the same banner colors as the headings (coral / teal / yellow / green) */
+    --t-coral: rgba(229, 130, 131, 0.3); --f-coral: #6b2a2b; --d-coral: #d9686a;
+    --t-teal: rgba(179, 227, 223, 0.65); --f-teal: #1f4f4b; --d-teal: #5fb3ab;
+    --t-yellow: rgba(242, 228, 157, 0.65); --f-yellow: #5c4d12; --d-yellow: #cfb23a;
+    --t-lime: rgba(206, 231, 170, 0.7); --f-lime: #35501a; --d-lime: #86b856;
+    --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Apple Color Emoji", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --bg: #191919;
+      --text: rgba(255, 255, 255, 0.81);
+      --muted: rgba(255, 255, 255, 0.5);
+      --faint: rgba(255, 255, 255, 0.3);
+      --line: rgba(255, 255, 255, 0.094);
+      --line-strong: rgba(255, 255, 255, 0.22);
+      --hover: rgba(255, 255, 255, 0.055);
+      --hover-soft: rgba(255, 255, 255, 0.03);
+      --card: #252525;
+      --card-shadow: rgba(255, 255, 255, 0.07) 0 0 0 1px, rgba(0, 0, 0, 0.3) 0 2px 4px;
+      --pop: #252525;
+      --pop-shadow: rgba(255, 255, 255, 0.08) 0 0 0 1px, rgba(0, 0, 0, 0.3) 0 3px 6px, rgba(0, 0, 0, 0.45) 0 9px 24px;
+      --outside: #1e1e1e;
+      --track: rgba(255, 255, 255, 0.12);
+      --bar: #cee7aa;
+      --c-coral: rgba(229, 130, 131, 0.24); --c-bell: rgba(179, 227, 223, 0.18);
+      --c-jar: rgba(242, 228, 157, 0.2); --c-lime: rgba(206, 231, 170, 0.2);
+      --c-red: #3a2624; --c-purple: #2e2637; --c-blue: #1e2e38; --c-green: #212f28; --c-orange: #3a2b20; --c-gray: #262626;
+      --t-gray: #3f4245; --t-red: #5c2b27; --t-green: #2b4a39; --t-blue: #27405a;
+      --t-orange: #5c3a1e; --t-purple: #3f2f56; --t-pink: #55293f;
+      --f-gray: rgba(255, 255, 255, 0.86); --f-red: var(--f-gray); --f-green: var(--f-gray); --f-blue: var(--f-gray);
+      --f-orange: var(--f-gray); --f-purple: var(--f-gray); --f-pink: var(--f-gray);
+      --d-gray: #8f8f8f; --d-red: #e06c64; --d-green: #6fb08a; --d-blue: #5ea7d8;
+      --d-orange: #e08a3c; --d-purple: #a985e0; --d-pink: #d66ea4;
+      --t-coral: rgba(229, 130, 131, 0.26); --t-teal: rgba(179, 227, 223, 0.2);
+      --t-yellow: rgba(242, 228, 157, 0.2); --t-lime: rgba(206, 231, 170, 0.2);
+      --f-coral: var(--f-gray); --f-teal: var(--f-gray); --f-yellow: var(--f-gray); --f-lime: var(--f-gray);
+      --d-coral: #e58283; --d-teal: #b3e3df; --d-yellow: #f2e49d; --d-lime: #cee7aa;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: rgba(35, 131, 226, 0.28); }
+  [hidden] { display: none !important; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; background: none; border: 0; padding: 0; }
+  :focus-visible { outline: 2px solid rgba(35, 131, 226, 0.6); outline-offset: 1px; border-radius: 4px; }
+  input[type="number"] { -moz-appearance: textfield; }
+  input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  select option { background: var(--pop); color: var(--text); }
+  .i { width: 14px; height: 14px; flex: none; }
+  .muted { color: var(--muted); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* Sub-page top bar, Notion style: stays at the top while scrolling, with a back button and the page path. Hidden on home. */
+  .topbar { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 4px; height: 44px; padding: 0 12px; background: var(--bg); view-transition-name: topbar; }
+  .topbar .back-btn { color: var(--muted); }
+  .topbar .back-btn:hover { color: var(--text); }
+  .crumbs { display: flex; align-items: center; min-width: 0; color: var(--muted); font-size: 14px; }
+  .crumb { display: inline-flex; align-items: center; gap: 6px; min-width: 0; height: 26px; padding: 0 6px; border-radius: 4px; color: inherit; text-decoration: none; white-space: nowrap; }
+  a.crumb:hover { background: var(--hover); color: var(--text); }
+  .crumb-sep { margin: 0 2px; color: var(--faint); }
+
+  /* Save status: hidden unless something fails or the page can't save */
+  .save-toast {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: calc(100vw - 32px);
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: var(--pop);
+    box-shadow: var(--pop-shadow);
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .save-toast [data-error] { color: var(--d-red); }
+  .save-toast button { height: 26px; padding: 0 8px; border-radius: 4px; color: var(--text); }
+  .save-toast button:hover { background: var(--hover); }
+
+  /* Short Notion-style banner: the gear sits in the middle, and wide screens cap the art's width so it stays whole. */
+  .fitness-banner {
+    position: relative;
+    height: clamp(150px, 16vw, 220px);
+    overflow: hidden;
+    background: #b4e0db;
+  }
+  .fitness-banner__art {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    display: block;
+    width: 100%;
+    max-width: 1320px;
+    height: 100%;
+    transform: translateX(-50%);
+    object-fit: cover;
+    object-position: center;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+  }
+  /* The icon overlaps the bottom edge of the banner by half */
+  .fitness-banner + .page .page-icon { position: relative; z-index: 1; margin-top: -52px; }
+  @media (max-width: 640px) {
+    .fitness-banner { height: clamp(96px, 24vw, 120px); }
+    .fitness-banner + .page .page-icon { width: 80px; height: 80px; margin-top: -40px; font-size: 68px; line-height: 80px; }
+  }
+
+  /* Page */
+  .page { max-width: 1400px; margin: 0 auto; padding: 0 72px 120px; }
+  /* Notion-style emoji icon: a fixed box, so it can overlap the banner's bottom edge */
+  .page-icon { display: block; width: 104px; height: 104px; margin: 44px 0 0 -4px; font-size: 88px; line-height: 104px; user-select: none; }
+  .title { margin: 18px 0 30px; font-size: 40px; font-weight: 700; line-height: 1.2; }
+  .columns { display: grid; grid-template-columns: minmax(0, 69fr) minmax(0, 31fr); gap: 40px; align-items: start; }
+  .col { min-width: 0; }
+  .section + .section { margin-top: 44px; }
+
+  /* Callouts */
+  .callout { display: flex; align-items: center; gap: 10px; padding: 12px 16px 12px 14px; border-radius: 6px; background: var(--c-gray); }
+  .callout.red { background: var(--c-red); }
+  .callout.t-coral { background: var(--c-coral); }
+  .callout.t-bell { background: var(--c-bell); }
+  .callout.t-jar { background: var(--c-jar); }
+  .callout.t-lime { background: var(--c-lime); }
+  .callout.purple { background: var(--c-purple); }
+  .callout.blue { background: var(--c-blue); }
+  .callout.green { background: var(--c-green); }
+  .callout.orange { background: var(--c-orange); }
+  .callout h2 { margin: 0; font-size: 20px; font-weight: 600; line-height: 1.3; }
+  .emoji { width: 22px; flex: none; font-size: 18px; line-height: 1; text-align: center; }
+  .goals { flex-direction: column; align-items: stretch; gap: 6px; padding-bottom: 14px; }
+  .goals-head { display: flex; align-items: center; gap: 10px; }
+  .todos { display: flex; flex-direction: column; padding-left: 32px; }
+
+  /* Page links */
+  .page-link { display: flex; align-items: center; gap: 8px; margin: 10px 0 2px; padding: 4px 6px; border-radius: 4px; color: inherit; text-decoration: none; }
+  .page-link:hover { background: var(--hover); }
+  .pl-icon { width: 22px; flex: none; font-size: 18px; line-height: 1; text-align: center; }
+  .pl-title { font-weight: 500; border-bottom: 1px solid var(--line-strong); }
+  .pl-meta { margin-left: auto; }
+
+  /* Button blocks and the database toolbar */
+  .nbtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 28px;
+    margin: 12px 0 6px;
+    padding: 0 10px 0 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--muted);
+    box-shadow: 0 0 0 1px var(--line), 0 1px 2px rgba(15, 15, 15, 0.05);
+  }
+  .nbtn:hover { background: var(--hover); }
+  .nbtn .i { color: var(--faint); }
+  .dbbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 8px; min-height: 36px; margin: 6px 0 2px; }
+  .tabs { display: flex; gap: 2px; }
+  .tab { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 14px; font-size: 14px; color: var(--muted); white-space: nowrap; }
+  .tab:hover { background: var(--hover); }
+  .tab[aria-selected="true"] { background: var(--hover); color: var(--text); font-weight: 500; }
+  .tools { display: flex; align-items: center; gap: 2px; margin-left: auto; }
+  .icon-btn { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 4px; color: var(--faint); }
+  .icon-btn:hover { background: var(--hover); color: var(--muted); }
+  .icon-btn.on, .icon-btn.on:hover { color: var(--blue); }
+  .icon-btn .i { width: 16px; height: 16px; }
+  .search { display: none; width: 150px; height: 28px; padding: 0 4px; border: 0; background: transparent; outline: none; font-size: 14px; }
+  .search.open { display: block; }
+  .search::placeholder { color: var(--faint); }
+
+  /* Calendar view */
+  .cal-head { display: flex; align-items: center; justify-content: space-between; height: 40px; padding: 0 2px; }
+  .cal-month { font-size: 14px; font-weight: 600; }
+  .cal-nav { display: flex; align-items: center; gap: 2px; font-size: 14px; }
+  .cal-nav button { display: grid; place-items: center; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 4px; color: var(--muted); }
+  .cal-nav button:hover { background: var(--hover); }
+  .cal-nav .today-btn { color: var(--text); }
+  .cal-scroll { overflow-x: auto; }
+  .cal { min-width: 680px; }
+  .cal-dow { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); height: 26px; font-size: 12px; line-height: 26px; color: var(--faint); text-align: center; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .cell {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+    min-height: 124px;
+    padding: 4px 4px 8px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .cell.out { background: var(--outside); }
+  .cell.out .daynum { color: var(--faint); }
+  .cell.drop { background: rgba(35, 131, 226, 0.08); }
+  .cell-top { display: flex; align-items: center; justify-content: space-between; height: 24px; }
+  .cell-add { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 4px; color: var(--faint); opacity: 0; }
+  .cell:hover .cell-add, .cell-add:focus-visible { opacity: 1; }
+  .cell-add:hover { background: var(--hover); }
+  .daynum { min-width: 24px; height: 24px; padding: 0 5px; border-radius: 12px; font-size: 14px; line-height: 24px; text-align: center; white-space: nowrap; }
+  .daynum.is-today { background: var(--today); color: #fff; font-weight: 600; }
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+    padding: 6px 8px 8px;
+    border-radius: 6px;
+    background: var(--card);
+    box-shadow: var(--card-shadow);
+    font-size: 12px;
+    line-height: 1.4;
+    cursor: pointer;
+    user-select: none;
+  }
+  .card:hover { background: color-mix(in srgb, var(--card), var(--text) 3%); }
+  .card.dragging { opacity: 0.4; }
+  .card-title { font-size: 13px; font-weight: 600; overflow-wrap: anywhere; }
+  .card-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; color: var(--muted); }
+  .card-ex { display: flex; flex-direction: column; gap: 3px; margin: 0; padding: 0; list-style: none; }
+  .card-ex li { display: flex; align-items: center; gap: 5px; min-width: 0; }
+  .card-ex .i { width: 12px; height: 12px; color: var(--muted); }
+  .card-ex span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; border-bottom: 1px solid var(--line-strong); }
+  .card-note { display: -webkit-box; overflow: hidden; white-space: pre-wrap; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+
+  /* Tags and status */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    max-width: 100%;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 3px;
+    background: var(--tb);
+    color: var(--tf);
+    font-size: 12px;
+    line-height: 20px;
+    white-space: nowrap;
+  }
+  .tag.status { padding: 0 8px 0 7px; border-radius: 10px; }
+  .tag.status::before { content: ""; width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--td); }
+  .k-gray { --tb: var(--t-gray); --tf: var(--f-gray); --td: var(--d-gray); }
+  .k-red { --tb: var(--t-red); --tf: var(--f-red); --td: var(--d-red); }
+  .k-green { --tb: var(--t-green); --tf: var(--f-green); --td: var(--d-green); }
+  .k-blue { --tb: var(--t-blue); --tf: var(--f-blue); --td: var(--d-blue); }
+  .k-orange { --tb: var(--t-orange); --tf: var(--f-orange); --td: var(--d-orange); }
+  .k-purple { --tb: var(--t-purple); --tf: var(--f-purple); --td: var(--d-purple); }
+  .k-pink { --tb: var(--t-pink); --tf: var(--f-pink); --td: var(--d-pink); }
+  .k-coral { --tb: var(--t-coral); --tf: var(--f-coral); --td: var(--d-coral); }
+  .k-teal { --tb: var(--t-teal); --tf: var(--f-teal); --td: var(--d-teal); }
+  .k-yellow { --tb: var(--t-yellow); --tf: var(--f-yellow); --td: var(--d-yellow); }
+  .k-lime { --tb: var(--t-lime); --tf: var(--f-lime); --td: var(--d-lime); }
+  .tag.pick { height: 22px; font-size: 14px; cursor: pointer; }
+  .tag.pick:focus-within { box-shadow: 0 0 0 2px rgba(35, 131, 226, 0.5); }
+  .tag.pick select { appearance: none; -webkit-appearance: none; padding: 0; border: 0; background: transparent; color: inherit; font-size: inherit; outline: none; cursor: pointer; }
+
+  /* Table view */
+  .tbl-scroll { position: relative; overflow-x: auto; }
+  table.db { min-width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.db th {
+    height: 34px;
+    padding: 0 8px;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    font-weight: 400;
+    text-align: left;
+    white-space: nowrap;
+  }
+  table.db td { height: 34px; padding: 0 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  table.db th + th, table.db td + td { border-left: 1px solid var(--line); }
+  .th { display: inline-flex; align-items: center; gap: 6px; }
+  .th .i { color: var(--faint); }
+  .aa { color: var(--faint); font-size: 12px; font-weight: 600; }
+  table.wk tr.row { cursor: pointer; }
+  table.wk tr.row:hover td { background: var(--hover-soft); }
+  table.wk td.name { min-width: 120px; font-weight: 500; }
+  table.wk .ex-cell, table.wk .snip { max-width: 260px; overflow: hidden; text-overflow: ellipsis; color: var(--muted); }
+  table.db td:focus-within { box-shadow: inset 0 0 0 2px rgba(35, 131, 226, 0.45); }
+  .newrow td { border-bottom: 0; }
+  .newrow button { display: flex; align-items: center; gap: 6px; width: 100%; height: 32px; padding: 0 2px; border-radius: 4px; color: var(--faint); font-size: 14px; }
+  .newrow button:hover { background: var(--hover); }
+  .tbl-foot { padding: 6px 8px; color: var(--faint); font-size: 12px; text-align: right; }
+  .tbl-foot b { color: var(--muted); font-weight: 500; }
+  .hint { margin: 8px 2px 0; color: var(--faint); font-size: 12px; }
+  .prog { display: inline-flex; align-items: center; gap: 8px; }
+  .prog-num { min-width: 2.6em; font-variant-numeric: tabular-nums; }
+  .prog-bar { width: 40px; height: 4px; overflow: hidden; border-radius: 2px; background: var(--track); }
+  .prog-bar i { display: block; height: 100%; border-radius: 2px; background: var(--bar); }
+
+  /* Checkboxes */
+  .todo { display: flex; align-items: flex-start; gap: 8px; padding: 2px 0; font-size: 15px; }
+  .chk {
+    appearance: none;
+    -webkit-appearance: none;
+    display: block;
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin: 3px 0 0;
+    border: 1.5px solid var(--muted);
+    border-radius: 3px;
+    background: transparent;
+    cursor: pointer;
+  }
+  .chk:hover { background-color: var(--hover); }
+  .chk:checked {
+    border-color: var(--blue);
+    background: var(--blue) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M5.6 11.2 2 7.6l1.3-1.3 2.3 2.3 5.1-5.1L12 4.8z' fill='white'/%3E%3C/svg%3E") center / 12px no-repeat;
+  }
+  .todo-text { flex: 1; min-width: 0; outline: none; overflow-wrap: anywhere; }
+  .todo-text:empty::before { content: attr(data-ph); color: var(--faint); }
+  .todo.done .todo-text { color: var(--faint); text-decoration: line-through; }
+  .add-line { display: flex; align-items: center; gap: 6px; width: 100%; height: 28px; padding: 0 2px; border-radius: 4px; color: var(--faint); font-size: 14px; text-align: left; }
+  .add-line:hover { background: var(--hover); }
+
+  /* Body data */
+  .body-sum { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 12px 0 8px; }
+  .sum { min-width: 0; padding: 8px 10px; border-radius: 6px; box-shadow: inset 0 0 0 1px var(--line); }
+  .sum > span { display: block; color: var(--muted); font-size: 12px; }
+  .sum b { font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .sum small { color: var(--muted); font-size: 12px; font-weight: 400; }
+  .sum em { display: block; color: var(--muted); font-size: 12px; font-style: normal; }
+  .sum input { width: 2.2em; min-width: 1.2em; field-sizing: content; padding: 0; border: 0; background: transparent; outline: none; font-size: 18px; font-weight: 600; }
+  .sum input:focus { box-shadow: 0 2px 0 var(--blue); }
+  .body-prog { display: flex; align-items: center; gap: 10px; margin: 0 2px 10px; color: var(--muted); font-size: 13px; }
+  .cell-in { display: block; width: 100%; height: 32px; padding: 0; border: 0; background: transparent; outline: none; font-size: 14px; }
+  .cell-in::placeholder { color: var(--faint); }
+  table.body-t td { padding: 0 6px; }
+  table.body-t .c-date { width: 124px; }
+  table.body-t .c-num, table.retest .c-num { width: 72px; }
+  table.body-t .c-note { min-width: 160px; }
+  .row-del { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 4px; color: var(--faint); opacity: 0; }
+  tr:hover .row-del, .row-del:focus-visible { opacity: 1; }
+  .row-del:hover { background: var(--hover); }
+  table.db .del-cell { width: 30px; padding: 0 4px; }
+
+  /* Toggles */
+  .para { margin: 12px 2px 6px; }
+  details.toggle { margin: 1px 0; }
+  details.toggle > summary { display: flex; align-items: center; gap: 4px; padding: 3px 2px; border-radius: 4px; cursor: pointer; list-style: none; }
+  details.toggle > summary::-webkit-details-marker { display: none; }
+  details.toggle > summary:hover { background: var(--hover-soft); }
+  .tri { display: grid; place-items: center; width: 22px; height: 22px; flex: none; border-radius: 4px; }
+  summary:hover .tri { background: var(--hover); }
+  .tri .i { width: 10px; height: 10px; transition: transform 0.15s ease; }
+  details[open] > summary .tri .i { transform: rotate(90deg); }
+  .range { margin-left: auto; padding-left: 12px; color: var(--faint); font-size: 13px; white-space: nowrap; }
+  .bul { margin: 0 0 6px; padding-left: 50px; }
+  .bul li { padding: 2px 0; }
+
+  /* Sub-pages (monthly review) */
+  .sub { max-width: 780px; margin: 0 auto; }
+  .sub-icon { margin-top: 36px; font-size: 72px; line-height: 1.1; }
+  .sub .title { margin: 14px 0 16px; }
+  .sub .h { margin: 36px 0 4px; font-size: 24px; font-weight: 600; line-height: 1.3; }
+  .desc { margin: 0 2px 10px; color: var(--muted); font-size: 14px; }
+  .text-block { display: block; width: 100%; min-height: 28px; padding: 3px 2px; border: 0; background: transparent; outline: none; resize: none; overflow: hidden; font-size: 16px; line-height: 1.5; }
+  .text-block::placeholder { color: var(--faint); }
+  .duo { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 32px; }
+  .note-callout { flex-direction: column; align-items: stretch; gap: 4px; padding: 12px 14px; }
+  .nc-head { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+  .fields { padding-left: 26px; }
+  .fields li { display: flex; align-items: flex-start; gap: 4px; padding: 0; }
+  .fields strong { flex: none; padding-top: 3px; }
+  table.retest .rt-name { min-width: 220px; white-space: normal; }
+  .rt-how { display: block; color: var(--faint); font-size: 12px; }
+  table.retest .rt-delta { width: 80px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .lv { border-top: 1px solid var(--line); }
+  .lv-row { display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 4px 6px; border-bottom: 1px solid var(--line); cursor: pointer; font-size: 14px; }
+  .lv-row:hover { background: var(--hover-soft); }
+  .lv-title { flex: none; font-weight: 500; }
+  .lv-meta { flex: none; color: var(--faint); font-size: 13px; }
+  .lv-snip { flex: 1; min-width: 0; overflow: hidden; color: var(--muted); text-overflow: ellipsis; white-space: nowrap; }
+
+  /* Side peek */
+  .peek {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    width: min(580px, 100vw);
+    background: var(--bg);
+    box-shadow: var(--pop-shadow);
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform 0.28s cubic-bezier(0.2, 0, 0, 1), visibility 0.28s;
+  }
+  .peek.open { transform: none; visibility: visible; }
+  .peek-bar { display: flex; flex: none; align-items: center; justify-content: space-between; height: 44px; padding: 0 10px; }
+  .peek-bar-left { display: flex; align-items: center; gap: 4px; min-width: 0; }
+  .peek-back { display: inline-flex; align-items: center; gap: 4px; min-width: 0; height: 28px; padding: 0 8px 0 4px; border-radius: 4px; color: var(--muted); font-size: 14px; white-space: nowrap; }
+  .peek-back:hover { background: var(--hover); }
+  .peek-body { flex: 1; overflow-y: auto; padding: 20px 48px 80px; }
+  .peek-icon { margin-bottom: 8px; font-size: 52px; line-height: 1.1; }
+  .peek-title { display: block; width: 100%; margin: 0 0 14px; padding: 0; border: 0; background: transparent; outline: none; font-size: 32px; font-weight: 700; line-height: 1.25; }
+  .peek-title::placeholder, .peek-note::placeholder, .ex-table input::placeholder, .prop-val input::placeholder { color: var(--faint); }
+  .props { display: flex; flex-direction: column; gap: 1px; }
+  .prop { display: flex; align-items: center; min-height: 34px; font-size: 14px; }
+  .prop-name { display: flex; flex: none; align-items: center; gap: 6px; width: 140px; padding: 0 6px; color: var(--muted); }
+  .prop-val { display: flex; flex: 1; align-items: center; gap: 8px; min-width: 0; min-height: 32px; padding: 2px 6px; border-radius: 4px; }
+  .prop-val:hover { background: var(--hover); }
+  .prop-val input { min-width: 0; padding: 0; border: 0; background: transparent; outline: none; font-size: 14px; }
+  .prop-val input.num { width: 3em; min-width: 1.5em; field-sizing: content; }
+  .unit { color: var(--muted); }
+  .divider { margin: 16px 0 8px; border: 0; border-top: 1px solid var(--line); }
+  .blk { margin: 22px 0 6px; font-size: 18px; font-weight: 600; }
+  .ex-table { width: 100%; min-width: 400px; border-collapse: collapse; font-size: 14px; }
+  .ex-table th { height: 32px; padding: 0 6px; border-bottom: 1px solid var(--line); color: var(--muted); font-weight: 400; text-align: left; white-space: nowrap; }
+  .ex-table td { height: 36px; padding: 0 6px; border-bottom: 1px solid var(--line); }
+  .ex-table input[type="text"], .ex-table input[type="number"] { display: block; width: 100%; height: 34px; padding: 0; border: 0; background: transparent; outline: none; font-size: 14px; }
+  .ex-table tr.done input[data-ef="name"] { color: var(--faint); text-decoration: line-through; }
+  .ex-table .c-chk { width: 30px; }
+  .ex-table .c-n { width: 60px; }
+  .ex-table .c-t { width: 100px; }
+  .ex-table .c-d { width: 32px; }
+  .ex-table .c-call { width: 130px; }
+  .peek-note { display: block; width: 100%; min-height: 60px; padding: 2px 0; border: 0; background: transparent; outline: none; resize: none; font-size: 16px; line-height: 1.5; }
+  .rel { display: flex; flex-direction: column; gap: 1px; }
+  .rel-row { display: flex; align-items: center; gap: 8px; min-height: 34px; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+  .rel-row:hover { background: var(--hover); }
+  .rel-row > .i { color: var(--muted); }
+  .rel-title { border-bottom: 1px solid var(--line-strong); }
+  .rel-date { margin-left: auto; color: var(--faint); font-size: 13px; white-space: nowrap; }
+
+  /* Pop-up menus */
+  .pop { position: fixed; z-index: 50; min-width: 220px; padding: 6px; border-radius: 6px; background: var(--pop); box-shadow: var(--pop-shadow); font-size: 14px; }
+  .pop h4 { margin: 6px 8px 4px; color: var(--muted); font-size: 12px; font-weight: 500; }
+  .pop .opt { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 30px; padding: 0 8px; border-radius: 4px; text-align: left; cursor: pointer; }
+  .pop .opt:hover { background: var(--hover); }
+  .pop .opt .chk { margin: 0; }
+  .pop .sep { margin: 6px 0; border-top: 1px solid var(--line); }
+  .pop .blank { display: inline-block; width: 14px; }
+
+  /* "Add workout" at the right of the toolbar, a Notion-style blue button */
+  .callout + .dbbar { margin-top: 10px; }
+  .new-btn { display: inline-flex; align-items: center; gap: 4px; height: 28px; margin-left: 6px; padding: 0 10px 0 8px; border-radius: 6px; background: var(--accent); box-shadow: 0 1px 2px rgba(15, 15, 15, 0.12); color: #fff; font-size: 14px; font-weight: 600; white-space: nowrap; }
+  .new-btn:hover { background: var(--accent-hover); }
+
+  /* One-click done */
+  .card-head { display: flex; align-items: flex-start; gap: 6px; }
+  .card-head .card-title { flex: 1; min-width: 0; }
+  .check-btn { display: grid; place-items: center; flex: none; width: 18px; height: 18px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--line-strong); color: transparent; }
+  .check-btn:hover { box-shadow: inset 0 0 0 1.5px var(--d-lime); color: var(--d-lime); }
+  .check-btn.on { background: var(--d-lime); box-shadow: none; color: var(--bg); }
+  .check-btn .i { width: 12px; height: 12px; stroke-width: 2.2; }
+  .status-cell { display: inline-flex; align-items: center; gap: 8px; }
+
+  /* Training plan sub-page */
+  .inline-link { color: inherit; text-decoration: none; border-bottom: 1px solid var(--line-strong); }
+  .inline-link:hover { border-bottom-color: var(--text); }
+  .pl-meta.muted { font-size: 13px; }
+  .sub .h + .desc { margin-top: 0; }
+  .week-notes { margin: 0 0 10px; padding-left: 26px; color: var(--muted); font-size: 14px; }
+  table.plan-t .c-dow { width: 100px; }
+  table.plan-t td.ex-list { min-width: 240px; padding: 6px 8px; color: var(--muted); line-height: 1.6; white-space: normal; }
+
+  /* Weight chart */
+  .chart { position: relative; margin: 12px 0 8px; }
+  .chart svg { display: block; width: 100%; height: auto; overflow: visible; touch-action: pan-y; }
+  .ch-grid { stroke: var(--line); }
+  .ch-tick { fill: var(--faint); font-size: 11px; }
+  .ch-target { stroke: var(--muted); stroke-dasharray: 4 4; }
+  .ch-target-label { fill: var(--muted); font-size: 11px; }
+  .ch-line { fill: none; stroke: var(--d-coral); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .ch-dot { fill: var(--d-coral); stroke: var(--bg); stroke-width: 2; }
+  .ch-last { fill: var(--text); font-size: 12px; font-weight: 600; }
+  .ch-cross { stroke: var(--line-strong); }
+  .ch-tip { position: absolute; top: -6px; padding: 3px 8px; border-radius: 4px; background: var(--pop); box-shadow: var(--pop-shadow); font-size: 12px; white-space: nowrap; pointer-events: none; transform: translate(-50%, -100%); }
+
+  /* Note shown after planning next month */
+  .gen-note { align-items: flex-start; margin: 20px 0 8px; font-size: 14px; }
+  .gen-note > div { flex: 1; min-width: 0; }
+  .gen-note .muted { margin-top: 2px; }
+
+  /* Confirm dialog */
+  .modal { position: fixed; inset: 0; z-index: 70; display: grid; place-items: center; padding: 16px; background: rgba(15, 15, 15, 0.4); }
+  .modal-card { width: min(420px, 100%); padding: 20px 20px 16px; border-radius: 10px; background: var(--pop); box-shadow: var(--pop-shadow); }
+  .modal-card h3 { margin: 0 0 8px; font-size: 16px; font-weight: 600; }
+  .modal-body { color: var(--muted); font-size: 14px; }
+  .modal-body p { margin: 0 0 8px; }
+  .modal-body ul { margin: 0 0 8px; padding-left: 20px; color: var(--text); }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+  .ghost-btn { height: 28px; padding: 0 12px; border-radius: 6px; box-shadow: inset 0 0 0 1px var(--line-strong); font-size: 14px; }
+  .ghost-btn:hover { background: var(--hover); }
+  .new-btn.danger { background: var(--d-coral); }
+
+  /* Page switches: a sub-page slides in from the right while home drifts left, and going back reverses it.
+     The top bar has its own transition name, so it stays in place instead of sliding. With reduced motion, pages just crossfade. */
+  @media (prefers-reduced-motion: no-preference) {
+    :root[data-nav]::view-transition-old(root) { animation: 180ms ease-out both slide-out-left; }
+    :root[data-nav]::view-transition-new(root) { animation: 300ms cubic-bezier(0.2, 0, 0, 1) both slide-in-right; }
+    :root[data-nav="back"]::view-transition-old(root) { animation-name: slide-out-right; }
+    :root[data-nav="back"]::view-transition-new(root) { animation-name: slide-in-left; }
+  }
+  @keyframes slide-in-right { from { opacity: 0; transform: translateX(36px); } }
+  @keyframes slide-out-left { to { opacity: 0; transform: translateX(-18px); } }
+  @keyframes slide-in-left { from { opacity: 0; transform: translateX(-18px); } }
+  @keyframes slide-out-right { to { opacity: 0; transform: translateX(36px); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .peek { transition: none; }
+  }
+  @media (hover: none) {
+    .cell-add, .row-del { opacity: 1; }
+  }
+  @media (max-width: 1040px) {
+    .columns { grid-template-columns: minmax(0, 1fr); }
+    .page { padding: 0 40px 96px; }
+  }
+  @media (max-width: 640px) {
+    .page { padding: 0 18px 80px; }
+    .title { font-size: 32px; }
+    .duo { grid-template-columns: minmax(0, 1fr); }
+    .peek-body { padding: 16px 22px 80px; }
+    .prop-name { width: 96px; }
+    .lv-snip { display: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="save-toast" id="save-toast" hidden>
+    <span id="save-state" role="status" aria-live="polite"></span>
+    <button type="button" id="retry" hidden>Retry</button>
+    <button type="button" id="toast-close" aria-label="Close" title="Close">×</button>
+  </div>
+
+  <section id="banner" class="fitness-banner" aria-label="Illustration of workout gear">
+    <img class="fitness-banner__art" src="./assets/banner.png" width="2172" height="724" alt="" fetchpriority="high" decoding="async">
+  </section>
+
+  <header class="topbar" id="topbar" hidden>
+    <a class="icon-btn back-btn" href="#/" data-route aria-label="Back to Workout Tracker" title="Back to Workout Tracker"><span data-icon="arrowL"></span></a>
+    <nav class="crumbs" aria-label="Breadcrumbs">
+      <a class="crumb" href="#/" data-route><span aria-hidden="true">📝</span>Workout Tracker</a>
+      <span class="crumb-sep" aria-hidden="true">/</span>
+      <span class="crumb" aria-current="page" id="crumb-current"></span>
+    </nav>
+  </header>
+
+  <main class="page">
+    <div id="home">
+      <div class="page-icon" role="img" aria-label="Notebook">📝</div>
+      <h1 class="title">Workout Tracker</h1>
+
+      <div class="columns">
+        <div class="col">
+          <section class="section" id="plan" aria-labelledby="h-plan">
+            <div class="callout t-jar"><span class="emoji" aria-hidden="true">⚡</span><h2 id="h-plan">Plan your workouts, track how they go</h2></div>
+            <div class="dbbar">
+              <div class="tabs" role="tablist" aria-label="Views">
+                <button type="button" role="tab" class="tab" data-view="calendar"><span data-icon="planner"></span>Calendar</button>
+                <button type="button" role="tab" class="tab" data-view="table"><span data-icon="table"></span>All workouts</button>
+              </div>
+              <div class="tools">
+                <input id="search" class="search" type="search" placeholder="Type to search…" aria-label="Search workouts">
+                <button type="button" class="icon-btn" id="filter-btn" aria-label="Filter" title="Filter"><span data-icon="filter"></span></button>
+                <button type="button" class="icon-btn" id="sort-btn" aria-label="Sort" title="Sort"><span data-icon="sort"></span></button>
+                <button type="button" class="icon-btn" id="search-btn" aria-label="Search" title="Search"><span data-icon="search"></span></button>
+                <button type="button" class="new-btn" data-act="add"><span data-icon="plus"></span>Add workout</button>
+              </div>
+            </div>
+            <div id="db"></div>
+          </section>
+
+          <section class="section" id="plans" aria-labelledby="h-plans">
+            <div class="callout t-lime"><span class="emoji" aria-hidden="true">📖</span><h2 id="h-plans">Plans and reviews</h2></div>
+            <div id="plan-links"></div>
+          </section>
+
+        </div>
+
+        <div class="col">
+          <section class="section" aria-labelledby="h-body">
+            <div class="callout t-coral"><span class="emoji" aria-hidden="true">📊</span><h2 id="h-body">Weight</h2></div>
+            <div class="chart" id="weight-chart"></div>
+            <a class="page-link" href="#/body" data-route><span class="pl-icon" aria-hidden="true">📄</span><span class="pl-title">Weight Log</span></a>
+          </section>
+
+          <section class="section" aria-labelledby="h-stats">
+            <div class="callout t-bell"><span class="emoji" aria-hidden="true">📈</span><h2 id="h-stats">Check-ins</h2></div>
+            <div class="dbbar">
+              <div class="tabs" role="tablist" aria-label="Stats views">
+                <button type="button" role="tab" class="tab" data-stat="stats"><span data-icon="table"></span>My stats</button>
+                <button type="button" role="tab" class="tab" data-stat="months"><span data-icon="planner"></span>By month</button>
+              </div>
+            </div>
+            <div id="stats"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <article id="sub" class="sub" hidden></article>
+  </main>
+
+  <aside id="peek" class="peek" aria-label="Details" inert>
+    <div class="peek-bar">
+      <div class="peek-bar-left">
+        <button type="button" class="icon-btn" data-act="close-peek" aria-label="Close" title="Close"><span data-icon="close"></span></button>
+        <button type="button" class="peek-back" data-act="peek-back" hidden><span data-icon="chevL"></span><span id="peek-back-label">Back</span></button>
+      </div>
+      <button type="button" class="icon-btn" data-act="del-workout" aria-label="Delete this workout" title="Delete"><span data-icon="trash"></span></button>
+    </div>
+    <div class="peek-body" id="peek-body"></div>
+  </aside>
+  <div id="pop" class="pop" hidden></div>
+  <!-- In-page confirm dialog: StashBase blocks the browser's own confirm(), so clicking would do nothing -->
+  <div class="modal" id="modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <h3 id="modal-title"></h3>
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-actions">
+        <button type="button" class="ghost-btn" data-modal="cancel">Cancel</button>
+        <button type="button" class="new-btn" data-modal="ok">OK</button>
+      </div>
+    </div>
+  </div>
+  <!-- The weight table lives here and moves as a whole into the Weight Log page, so its events don't need rebinding -->
+  <div hidden>
+    <div id="body-parts">
+      <div class="props">
+        <div class="prop"><span class="prop-name"><span data-icon="trend"></span>Goal weight</span><label class="prop-val"><input id="target" class="num" type="text" inputmode="decimal" autocomplete="off" placeholder="Empty" aria-label="Goal weight"><span class="unit" id="target-unit">kg</span></label></div>
+      </div>
+      <hr class="divider">
+      <div id="body"></div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  "use strict";
+
+  const DATA_PATH = "./assets/tracker.json";
+  const STATUS = {
+    todo: { label: "Not started", k: "coral" },
+    doing: { label: "In progress", k: "teal" },
+    done: { label: "Done", k: "lime" },
+    skipped: { label: "Skipped", k: "gray" },
+  };
+  const TYPES = {
+    A: { label: "Day A", k: "coral" },
+    B: { label: "Day B", k: "lime" },
+    C: { label: "Day C", k: "yellow" },
+    D: { label: "Day D", k: "teal" },
+    cardio: { label: "Cardio", k: "blue" },
+    other: { label: "Other", k: "gray" },
+  };
+  // Reviews have no status to pick: anything written counts as Written.
+  const WRITTEN = { label: "Written", k: "lime" };
+  const NOT_WRITTEN = { label: "Not written", k: "gray" };
+  // Exercises nobody picked for count as Keep, so a review only marks the ones to step up or back.
+  const CALLS = {
+    up: { label: "Step up", k: "lime" },
+    keep: { label: "Keep", k: "gray" },
+    down: { label: "Step back", k: "coral" },
+  };
+  const DOW = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const PATHS = {
+    plus: '<path d="M8 3v10M3 8h10"/>',
+    planner: '<rect x="2.5" y="3" width="11" height="10.5" rx="2"/><path d="M2.5 6.5h11M5.5 1.8v2.4M10.5 1.8v2.4"/>',
+    table: '<rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M2 6.5h12M2 9.8h12M6.5 6.5V13"/>',
+    filter: '<path d="M2.5 4h11M4.5 8h7M6.5 12h3"/>',
+    sort: '<path d="M5 13V3M2.5 5.5 5 3l2.5 2.5M11 3v10M8.5 10.5 11 13l2.5-2.5"/>',
+    search: '<circle cx="7" cy="7" r="4.3"/><path d="m10.2 10.2 3.3 3.3"/>',
+    chevL: '<path d="M10 3.5 5.5 8l4.5 4.5"/>',
+    chevR: '<path d="M6 3.5 10.5 8 6 12.5"/>',
+    arrowL: '<path d="M13 8H3M7 4 3 8l4 4"/>',
+    dumbbell: '<path d="M5.5 8h5M1.3 8h1.5M13.2 8h1.5"/><rect x="2.8" y="4.5" width="2.7" height="7" rx=".8"/><rect x="10.5" y="4.5" width="2.7" height="7" rx=".8"/>',
+    trend: '<path d="M2 12.5 6 8.5l2.5 2.5L14 5.5M10.5 5.5H14V9"/>',
+    tri: '<path d="M5 2.5v11l7-5.5z" fill="currentColor" stroke="none"/>',
+    close: '<path d="M3.5 3.5 8 8l-4.5 4.5M8.5 3.5 13 8l-4.5 4.5"/>',
+    x: '<path d="m4.5 4.5 7 7M11.5 4.5l-7 7"/>',
+    trash: '<path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 8.5h5.8l.6-8.5"/>',
+    clock: '<circle cx="8" cy="8" r="5.8"/><path d="M8 4.8V8l2.2 1.4"/>',
+    status: '<circle cx="8" cy="8" r="5.8"/><circle cx="8" cy="8" r="2" fill="currentColor" stroke="none"/>',
+    select: '<circle cx="8" cy="8" r="5.8"/><path d="M5.6 7 8 9.4 10.4 7"/>',
+    list: '<path d="M6 4.5h7.5M6 8h7.5M6 11.5h7.5M2.8 4.5h.4M2.8 8h.4M2.8 11.5h.4"/>',
+    check: '<path d="m3 8.5 3.2 3L13 4.5"/>',
+  };
+  const icon = (name) => `<svg class="i" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${PATHS[name]}</svg>`;
+
+  const $ = (selector) => document.querySelector(selector);
+  const homeEl = $("#home");
+  const subEl = $("#sub");
+  const dbEl = $("#db");
+  const statsEl = $("#stats");
+  const bodyEl = $("#body");
+  const peekEl = $("#peek");
+  const peekBody = $("#peek-body");
+  const popEl = $("#pop");
+  const searchEl = $("#search");
+  const targetEl = $("#target");
+  const modalEl = $("#modal");
+
+  // In-page confirm dialog. Returns Promise<boolean>.
+  let modalResolve = null;
+  function ask(title, bodyHtml, okLabel = "OK", danger = false) {
+    $("#modal-title").textContent = title;
+    $("#modal-body").innerHTML = bodyHtml;
+    const ok = modalEl.querySelector('[data-modal="ok"]');
+    ok.textContent = okLabel;
+    ok.classList.toggle("danger", danger);
+    modalEl.hidden = false;
+    ok.focus();
+    return new Promise((resolve) => { modalResolve = resolve; });
+  }
+  function closeModal(result) {
+    if (!modalResolve) return;
+    modalEl.hidden = true;
+    const resolve = modalResolve;
+    modalResolve = null;
+    resolve(result);
+  }
+  modalEl.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-modal]");
+    if (button) closeModal(button.dataset.modal === "ok");
+    else if (event.target === modalEl) closeModal(false);
+  });
+
+  const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const isObj = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
+  const arr = (value) => (Array.isArray(value) ? value : []);
+  const str = (value) => (typeof value === "string" ? value : "");
+  const num = (value) => {
+    if (value == null || value === "") return null;
+    const n = Number(value);
+    return Number.isFinite(n) ? n : null;
+  };
+  const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
+  const pad = (n) => String(n).padStart(2, "0");
+  const ymd = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const isDate = (s) => typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s);
+  const isMonth = (s) => typeof s === "string" && /^\d{4}-\d{2}$/.test(s);
+  const parse = (s) => {
+    const [y, m, d] = s.split("-").map(Number);
+    return new Date(y, m - 1, d);
+  };
+  const today = () => ymd(new Date());
+  const monthOf = (d) => ({ y: d.getFullYear(), m: d.getMonth() });
+  const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+  const weekStart = (d) => addDays(d, -((d.getDay() + 6) % 7));
+  const byDate = (a, b) => a.date.localeCompare(b.date);
+  const round1 = (n) => Math.round(n * 10) / 10;
+  const signed = (n) => `${n > 0 ? "+" : ""}${round1(n)}`;
+  const pct = (part, whole) => (whole ? Math.round((part / whole) * 100) : null);
+  const md = (s) => {
+    const d = parse(s);
+    return `${d.getMonth() + 1}/${d.getDate()}`;
+  };
+  const monthName = (key) => MONTHS[Number(key.slice(5, 7)) - 1];
+  const monthLabel = (key) => `${monthName(key)} ${key.slice(0, 4)}`;
+  const fmtDate = (s) => {
+    const d = parse(s);
+    return `${DOW[(d.getDay() + 6) % 7]}, ${MONTHS[d.getMonth()].slice(0, 3)} ${d.getDate()}`;
+  };
+  const fmtDur = (min) => {
+    if (!min) return "";
+    const h = Math.floor(min / 60);
+    const m = Math.round(min % 60);
+    return h ? `${h} hr${m ? ` ${m} min` : ""}` : `${m} min`;
+  };
+  const unit = () => data.weightUnit;
+  const tag = (o, status) => `<span class="tag${status ? " status" : ""} k-${o.k}">${o.label}</span>`;
+  const options = (map, current) => Object.entries(map).map(([k, v]) => `<option value="${k}"${k === current ? " selected" : ""}>${v.label}</option>`).join("");
+  // Progress meter: the number always shows; the bar only helps.
+  const meter = (p, label) => {
+    if (p == null) return '<span class="muted">—</span>';
+    const v = Math.max(0, Math.min(100, p));
+    return `<span class="prog"><span class="prog-num">${label ?? `${v}%`}</span><span class="prog-bar" aria-hidden="true"><i style="width:${v}%"></i></span></span>`;
+  };
+
+  function normalizeReviews(raw) {
+    const src = isObj(raw) ? raw : {};
+    const weeks = {};
+    const months = {};
+    for (const [key, r] of Object.entries(isObj(src.weeks) ? src.weeks : {})) {
+      if (!isDate(key) || !isObj(r)) continue;
+      const calls = isObj(r.calls) ? r.calls : {};
+      weeks[key] = {
+        ...r,
+        conclusion: str(r.conclusion),
+        calls: Object.fromEntries(Object.entries(calls).filter(([, v]) => v && CALLS[v])),
+      };
+    }
+    for (const [key, r] of Object.entries(isObj(src.months) ? src.months : {})) {
+      if (!isMonth(key) || !isObj(r)) continue;
+      months[key] = { ...r, summary: str(r.summary) };
+    }
+    return { ...src, weeks, months };
+  }
+
+  // Week notes are keyed by the Monday that starts the week.
+  function normalizeWeekNotes(raw) {
+    const notes = {};
+    for (const [key, n] of Object.entries(isObj(raw) ? raw : {})) {
+      if (!isDate(key) || !isObj(n)) continue;
+      notes[key] = { ...n, focus: str(n.focus), cardio: str(n.cardio), effort: str(n.effort), progression: str(n.progression) };
+    }
+    return notes;
+  }
+
+  function normalize(raw) {
+    const src = isObj(raw) ? raw : {};
+    return {
+      ...src,
+      schemaVersion: 1,
+      weightUnit: src.weightUnit === "lb" ? "lb" : "kg",
+      targetWeight: num(src.targetWeight),
+      start: arr(src.start).filter(isObj).map((s) => ({ ...s, label: str(s.label), text: str(s.text) })).filter((s) => s.text.trim()),
+      restDays: DOW.map((_, i) => str(arr(src.restDays)[i]) || "Rest"),
+      weekNotes: normalizeWeekNotes(src.weekNotes),
+      workouts: arr(src.workouts).filter(isObj).map((w) => ({
+        ...w,
+        id: str(w.id) || uid(),
+        title: str(w.title),
+        date: isDate(w.date) ? w.date : today(),
+        type: TYPES[w.type] ? w.type : "other",
+        duration: num(w.duration),
+        status: STATUS[w.status] ? w.status : "todo",
+        note: str(w.note),
+        exercises: arr(w.exercises).filter(isObj).map((e) => ({
+          ...e, id: str(e.id) || uid(), name: str(e.name), sets: num(e.sets), target: str(e.target), done: !!e.done,
+        })),
+      })),
+      body: arr(src.body).filter(isObj).map((b) => ({
+        ...b,
+        id: str(b.id) || uid(),
+        date: isDate(b.date) ? b.date : "",
+        weight: num(b.weight),
+        note: str(b.note),
+      })),
+      reviews: normalizeReviews(src.reviews),
+    };
+  }
+
+  const api = window.stashbase?.data;
+  let data = normalize({});
+  let canSave = false;
+  let loadError = "";
+  let saveError = "";
+  let saving = false;
+  let revision = 0;
+  let savedRevision = 0;
+  let saveTimer = 0;
+  let queue = Promise.resolve();
+
+  let route = { name: "home" };
+  let homeScroll = 0;
+  let view = "calendar";
+  let statView = "stats";
+  let cursor = monthOf(new Date());
+  let query = "";
+  let sortDir = 1;
+  const statusFilter = new Set();
+  const typeFilter = new Set();
+  let peek = null; // { kind: "workout" | "week", id }
+  const peekStack = [];
+  let popFor = null;
+
+  /* ---------- Saving: changes sync to the draft first, then write to the JSON after a short pause ---------- */
+
+  const snapshot = () => JSON.parse(JSON.stringify(data));
+
+  function enqueue(operation) {
+    const task = queue.then(operation);
+    queue = task.catch(() => {});
+    return task;
+  }
+
+  function commit() {
+    revision += 1;
+    if (canSave) {
+      const snap = snapshot();
+      enqueue(() => api.update(snap)).catch((error) => {
+        console.error(error);
+        saveError = "Sync failed";
+        renderSaveState();
+      });
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(save, 800);
+    }
+    renderSaveState();
+  }
+
+  async function save() {
+    clearTimeout(saveTimer);
+    if (!canSave || saving || savedRevision === revision) return;
+    const rev = revision;
+    const snap = snapshot();
+    saving = true;
+    renderSaveState();
+    try {
+      await enqueue(async () => {
+        await api.update(snap);
+        await api.save();
+      });
+      savedRevision = rev;
+      saveError = "";
+    } catch (error) {
+      console.error(error);
+      saveError = "Couldn't save";
+    } finally {
+      saving = false;
+      if (!saveError && savedRevision !== revision) saveTimer = setTimeout(save, 800);
+      renderSaveState();
+    }
+  }
+
+  function renderSaveState() {
+    const el = $("#save-state");
+    let text = "Saved";
+    let error = false;
+    if (loadError) { text = loadError; error = true; }
+    else if (!canSave) text = "Preview mode · changes won't be saved";
+    else if (saveError) { text = `${saveError}. Your changes are still on the page.`; error = true; }
+    else if (saving) text = "Saving…";
+    else if (savedRevision !== revision) text = "Not saved";
+    el.textContent = text;
+    el.toggleAttribute("data-error", error);
+    $("#retry").hidden = !(canSave && saveError);
+    $("#save-toast").hidden = canSave && !error;
+  }
+
+  // After any data change, refresh every view that depends on it (the input being edited isn't in these areas).
+  function refreshViews() {
+    renderDb();
+    renderStats();
+    refreshReviews();
+  }
+
+  /* ---------- Database: calendar and table ---------- */
+
+  function visible() {
+    const q = query.trim().toLowerCase();
+    return data.workouts
+      .filter((w) => (!statusFilter.size || statusFilter.has(w.status))
+        && (!typeFilter.size || typeFilter.has(w.type))
+        && (!q || [w.title, w.note, ...w.exercises.map((e) => e.name)].some((s) => s.toLowerCase().includes(q))))
+      .sort((a, b) => sortDir * byDate(a, b));
+  }
+
+  // The ✓ on cards and rows: one click marks it done, another sets it back to not started, without opening it.
+  const checkBtn = (w) => {
+    const done = w.status === "done";
+    return `<button type="button" class="check-btn${done ? " on" : ""}" data-act="toggle-done" data-id="${esc(w.id)}" aria-pressed="${done}" aria-label="${done ? "Mark not done" : "Mark done"}" title="${done ? "Mark not done" : "Mark done"}">${icon("check")}</button>`;
+  };
+
+  // The × at the end of a row: shows on hover, and asks before deleting.
+  const delBtn = (act, id, label) => `<button type="button" class="row-del" data-act="${act}" data-id="${esc(id)}" aria-label="${esc(label)}" title="${esc(label)}">${icon("x")}</button>`;
+
+  async function deleteWorkout(id) {
+    const w = workoutById(id);
+    if (!w) return;
+    if (!isBlank(w) && !(await ask("Delete this workout?", `<p>“${esc(w.title || "Untitled")}” (${fmtDate(w.date)}) will be deleted. This can't be undone.</p>`, "Delete", true))) return;
+    data.workouts = data.workouts.filter((x) => x.id !== id);
+    if (peek?.kind === "workout" && peek.id === id) {
+      peek = null;
+      peekStack.length = 0;
+      peekEl.classList.remove("open");
+      peekEl.setAttribute("inert", "");
+    }
+    commit();
+    refreshViews();
+  }
+
+  function toggleDone(id) {
+    const w = workoutById(id);
+    if (!w) return;
+    w.status = w.status === "done" ? "todo" : "done";
+    commit();
+    refreshViews();
+    if (peek) renderPeek();
+  }
+
+  function cardHtml(w) {
+    const exercises = w.exercises.filter((e) => e.name.trim());
+    return `<div class="card" role="button" tabindex="0" draggable="true" data-id="${esc(w.id)}">
+      <div class="card-head"><div class="card-title">${esc(w.title) || '<span class="muted">Untitled</span>'}</div>${checkBtn(w)}</div>
+      <div class="card-tags">${tag(TYPES[w.type])}${w.duration ? `<span>${fmtDur(w.duration)}</span>` : ""}</div>
+      ${exercises.length ? `<ul class="card-ex">${exercises.map((e) => `<li>${icon("dumbbell")}<span>${esc(e.name)}</span></li>`).join("")}</ul>` : ""}
+      ${w.note.trim() ? `<div class="card-note">${esc(w.note)}</div>` : ""}
+      <div>${tag(STATUS[w.status], true)}</div>
+    </div>`;
+  }
+
+  function calendarHtml() {
+    const { y, m } = cursor;
+    const start = weekStart(new Date(y, m, 1));
+    const end = addDays(weekStart(new Date(y, m + 1, 0)), 6);
+    const groups = {};
+    for (const w of visible()) (groups[w.date] ||= []).push(w);
+    const t = today();
+    let cells = "";
+    for (let d = start; d <= end; d = addDays(d, 1)) {
+      const key = ymd(d);
+      const label = d.getDate() === 1 ? `${MONTHS[d.getMonth()].slice(0, 3)} 1` : d.getDate();
+      cells += `<div class="cell${d.getMonth() !== m ? " out" : ""}" data-date="${key}">
+        <div class="cell-top"><button type="button" class="cell-add" data-act="add-on" data-date="${key}" aria-label="Add a workout on ${fmtDate(key)}">${icon("plus")}</button><span class="daynum${key === t ? " is-today" : ""}">${label}</span></div>
+        ${(groups[key] || []).map(cardHtml).join("")}
+      </div>`;
+    }
+    return `<div class="cal-head">
+        <span class="cal-month">${MONTHS[m]} ${y}</span>
+        <div class="cal-nav">
+          <button type="button" data-act="prev" aria-label="Previous month">${icon("chevL")}</button>
+          <button type="button" class="today-btn" data-act="today">Today</button>
+          <button type="button" data-act="next" aria-label="Next month">${icon("chevR")}</button>
+        </div>
+      </div>
+      <div class="cal-scroll"><div class="cal">
+        <div class="cal-dow">${DOW.map((d) => `<span>${d}</span>`).join("")}</div>
+        <div class="cal-grid">${cells}</div>
+      </div></div>`;
+  }
+
+  function tableHtml() {
+    const rows = visible();
+    return `<div class="tbl-scroll"><table class="db wk">
+      <thead><tr>
+        <th><span class="th"><span class="aa">Aa</span>Name</span></th>
+        <th><span class="th">${icon("planner")}Date</span></th>
+        <th><span class="th">${icon("select")}Type</span></th>
+        <th><span class="th">${icon("list")}Exercises</span></th>
+        <th><span class="th">${icon("clock")}Duration</span></th>
+        <th><span class="th">${icon("status")}Status</span></th>
+        <th class="del-cell"><span class="sr">Delete</span></th>
+      </tr></thead>
+      <tbody>
+        ${rows.map((w) => `<tr class="row" tabindex="0" data-id="${esc(w.id)}">
+          <td class="name">${esc(w.title) || '<span class="muted">Untitled</span>'}</td>
+          <td>${fmtDate(w.date)}</td>
+          <td>${tag(TYPES[w.type])}</td>
+          <td class="ex-cell">${esc(w.exercises.map((e) => e.name).filter(Boolean).join(", "))}</td>
+          <td>${fmtDur(w.duration)}</td>
+          <td><span class="status-cell">${checkBtn(w)}${tag(STATUS[w.status], true)}</span></td>
+          <td class="del-cell">${delBtn("del-row", w.id, "Delete this workout")}</td>
+        </tr>`).join("")}
+        <tr class="newrow"><td colspan="7"><button type="button" data-act="add">${icon("plus")}New</button></td></tr>
+      </tbody>
+    </table></div>
+    <div class="tbl-foot">Count <b>${rows.length}</b></div>`;
+  }
+
+  function renderDb() {
+    document.querySelectorAll("[data-view]").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.view === view)));
+    $("#filter-btn").classList.toggle("on", statusFilter.size + typeFilter.size > 0);
+    $("#sort-btn").classList.toggle("on", sortDir < 0);
+    $("#search-btn").classList.toggle("on", !!query.trim());
+    dbEl.innerHTML = view === "calendar" ? calendarHtml() : tableHtml();
+  }
+
+  function addWorkout(date) {
+    const w = { id: uid(), title: "", date, type: "other", duration: null, status: "todo", exercises: [], note: "" };
+    data.workouts.push(w);
+    cursor = monthOf(parse(date));
+    commit();
+    refreshViews();
+    openPeek("workout", w.id);
+  }
+
+  const workoutById = (id) => data.workouts.find((w) => w.id === id);
+
+  $("#plan").addEventListener("click", (event) => {
+    const actEl = event.target.closest("[data-act]");
+    const act = actEl?.dataset.act;
+    if (act === "toggle-done") return toggleDone(actEl.dataset.id);
+    if (act === "del-row") return deleteWorkout(actEl.dataset.id);
+    if (act === "add") return addWorkout(today());
+    if (act === "add-on") return addWorkout(actEl.dataset.date);
+    if (act === "prev" || act === "next") {
+      cursor = monthOf(new Date(cursor.y, cursor.m + (act === "next" ? 1 : -1), 1));
+      return renderDb();
+    }
+    if (act === "today") {
+      cursor = monthOf(new Date());
+      return renderDb();
+    }
+    const tab = event.target.closest("[data-view]");
+    if (tab) {
+      view = tab.dataset.view;
+      return renderDb();
+    }
+    const item = event.target.closest(".card, tr.row");
+    if (item) openPeek("workout", item.dataset.id);
+  });
+
+  // Cards, table rows, and review rows all open with Enter or Space.
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    const item = event.target.closest?.(".card, tr.row, [data-week], [data-open]");
+    if (!item || event.target !== item) return;
+    event.preventDefault();
+    item.click();
+  });
+
+  // Drag a card to another day to reschedule it.
+  const clearDrop = () => dbEl.querySelectorAll(".cell.drop").forEach((c) => c.classList.remove("drop"));
+  dbEl.addEventListener("dragstart", (event) => {
+    const card = event.target.closest?.(".card");
+    if (!card) return;
+    event.dataTransfer.setData("text/plain", card.dataset.id);
+    event.dataTransfer.effectAllowed = "move";
+    card.classList.add("dragging");
+  });
+  dbEl.addEventListener("dragend", (event) => {
+    event.target.closest?.(".card")?.classList.remove("dragging");
+    clearDrop();
+  });
+  dbEl.addEventListener("dragover", (event) => {
+    const cell = event.target.closest(".cell");
+    if (!cell) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+    if (!cell.classList.contains("drop")) {
+      clearDrop();
+      cell.classList.add("drop");
+    }
+  });
+  dbEl.addEventListener("drop", (event) => {
+    const cell = event.target.closest(".cell");
+    if (!cell) return;
+    event.preventDefault();
+    clearDrop();
+    const w = workoutById(event.dataTransfer.getData("text/plain"));
+    if (!w || w.date === cell.dataset.date) return;
+    w.date = cell.dataset.date;
+    commit();
+    refreshViews();
+    if (peek) renderPeek();
+  });
+
+  /* ---------- Search, filter, sort ---------- */
+
+  $("#search-btn").addEventListener("click", () => {
+    const open = !searchEl.classList.contains("open");
+    searchEl.classList.toggle("open", open);
+    if (open) searchEl.focus();
+    else {
+      searchEl.value = "";
+      query = "";
+      renderDb();
+    }
+  });
+  searchEl.addEventListener("input", () => {
+    query = searchEl.value;
+    renderDb();
+  });
+  searchEl.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    event.stopPropagation();
+    searchEl.value = "";
+    query = "";
+    searchEl.classList.remove("open");
+    renderDb();
+    $("#search-btn").focus();
+  });
+
+  function filterHtml() {
+    const opts = (map, set, attr) => Object.entries(map).map(([k, v]) => `<label class="opt"><input type="checkbox" class="chk" ${attr}="${k}"${set.has(k) ? " checked" : ""}>${tag(v, map === STATUS)}</label>`).join("");
+    return `<h4>Status</h4>${opts(STATUS, statusFilter, "data-fs")}<h4>Type</h4>${opts(TYPES, typeFilter, "data-ft")}
+      <div class="sep"></div><button type="button" class="opt" data-act="clear-filter">Clear filters</button>`;
+  }
+
+  function sortHtml() {
+    const opt = (dir, label) => `<button type="button" class="opt" data-sort="${dir}">${sortDir === dir ? icon("check") : '<span class="blank"></span>'}${label}</button>`;
+    return `<h4>Sort by date</h4>${opt(1, "Oldest first")}${opt(-1, "Newest first")}`;
+  }
+
+  function togglePop(kind, anchor) {
+    if (popFor === kind) return closePop();
+    popFor = kind;
+    popEl.innerHTML = kind === "filter" ? filterHtml() : sortHtml();
+    popEl.hidden = false;
+    const rect = anchor.getBoundingClientRect();
+    const width = popEl.offsetWidth;
+    popEl.style.top = `${rect.bottom + 6}px`;
+    popEl.style.left = `${Math.max(8, Math.min(rect.right - width, innerWidth - width - 8))}px`;
+  }
+
+  function closePop() {
+    popFor = null;
+    popEl.hidden = true;
+  }
+
+  $("#filter-btn").addEventListener("click", (event) => togglePop("filter", event.currentTarget));
+  $("#sort-btn").addEventListener("click", (event) => togglePop("sort", event.currentTarget));
+  popEl.addEventListener("change", (event) => {
+    const t = event.target;
+    const set = t.dataset.fs ? statusFilter : t.dataset.ft ? typeFilter : null;
+    if (!set) return;
+    const key = t.dataset.fs || t.dataset.ft;
+    if (t.checked) set.add(key);
+    else set.delete(key);
+    renderDb();
+  });
+  popEl.addEventListener("click", (event) => {
+    const el = event.target.closest("[data-act], [data-sort]");
+    if (!el) return;
+    if (el.dataset.act === "clear-filter") {
+      statusFilter.clear();
+      typeFilter.clear();
+      popEl.innerHTML = filterHtml();
+    } else {
+      sortDir = Number(el.dataset.sort);
+      closePop();
+    }
+    renderDb();
+  });
+  addEventListener("scroll", () => popFor && closePop(), { passive: true });
+  addEventListener("resize", () => popFor && closePop());
+
+  /* ---------- Reviews: weeks start on Monday. A week that spans two months belongs to the month its Thursday is in (where most of its days are). ---------- */
+
+  function weekList() {
+    const keys = new Set(data.workouts.map((w) => ymd(weekStart(parse(w.date)))));
+    Object.keys(data.reviews.weeks).forEach((key) => keys.add(key));
+    const counter = {};
+    return [...keys].sort().map((key) => {
+      const month = ymd(addDays(parse(key), 3)).slice(0, 7);
+      counter[month] = (counter[month] || 0) + 1;
+      const end = ymd(addDays(parse(key), 6));
+      return { key, month, n: counter[month], end, workouts: data.workouts.filter((w) => w.date >= key && w.date <= end).sort(byDate) };
+    });
+  }
+
+  const weekInfo = (key) => weekList().find((w) => w.key === key)
+    || { key, month: key.slice(0, 7), n: 1, end: ymd(addDays(parse(key), 6)), workouts: [] };
+  const weekName = (w) => `${monthName(w.month)} Week ${w.n}`;
+  const weekReview = (key) => (data.reviews.weeks[key] ||= { conclusion: "", calls: {} });
+  const monthReview = (key) => (data.reviews.months[key] ||= { summary: "" });
+  const reviewStatus = (r) => (r && (str(r.conclusion).trim() || str(r.summary).trim() || Object.keys(r.calls || {}).length) ? WRITTEN : NOT_WRITTEN);
+  const sortedBody = () => data.body.slice().sort((a, b) => (a.date || "9999").localeCompare(b.date || "9999"));
+
+  function weekWeight(w) {
+    const rows = sortedBody().filter((b) => b.date >= w.key && b.date <= w.end && b.weight != null);
+    return rows.length ? rows[rows.length - 1].weight : null;
+  }
+
+  function monthWeights(key) {
+    const rows = sortedBody().filter((b) => b.date.startsWith(key) && b.weight != null);
+    return { start: rows[0]?.weight ?? null, end: rows.length > 1 ? rows[rows.length - 1].weight : null };
+  }
+
+  function doneMeter(list) {
+    const done = list.filter((w) => w.status === "done").length;
+    return meter(pct(done, list.length), `${done} / ${list.length}`);
+  }
+
+  function weeksTable(weeks) {
+    return `<div class="tbl-scroll"><table class="db wk">
+      <thead><tr>
+        <th><span class="th"><span class="aa">Aa</span>Week</span></th>
+        <th><span class="th">${icon("planner")}Date</span></th>
+        <th><span class="th">${icon("trend")}Done</span></th>
+        <th><span class="th">${icon("trend")}Weigh-in</span></th>
+        <th><span class="th">${icon("status")}Status</span></th>
+        <th><span class="th">${icon("list")}Takeaway</span></th>
+      </tr></thead>
+      <tbody>${weeks.map((w) => {
+        const r = data.reviews.weeks[w.key];
+        const weight = weekWeight(w);
+        return `<tr class="row" tabindex="0" data-week="${w.key}">
+          <td class="name">${weekName(w)}</td>
+          <td>${md(w.key)} – ${md(w.end)}</td>
+          <td>${w.workouts.length ? doneMeter(w.workouts) : '<span class="muted">—</span>'}</td>
+          <td>${weight != null ? `${weight} ${unit()}` : '<span class="muted">—</span>'}</td>
+          <td>${tag(reviewStatus(r), true)}</td>
+          <td class="snip">${esc(r?.conclusion || "")}</td>
+        </tr>`;
+      }).join("") || '<tr><td colspan="6" class="muted">No workouts this month yet</td></tr>'}</tbody>
+    </table></div>`;
+  }
+
+
+  /* ---------- Sub-page: training plan ---------- */
+
+  const plannedWeeks = () => weekList().filter((w) => w.workouts.length);
+  const plannedMonths = () => [...new Set(plannedWeeks().map((w) => w.month))];
+
+  function nextMonthKey(key) {
+    const d = new Date(Number(key.slice(0, 4)), Number(key.slice(5)), 1);
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}`;
+  }
+
+  // Exercises marked Step up / Step back in a review: reps under 6 move by 1, the rest by 2, never below 1.
+  const shiftTarget = (target, dir) => target.replace(/\d+/g, (n) => {
+    const v = Number(n);
+    return String(Math.max(1, v + dir * (v < 6 ? 1 : 2)));
+  });
+
+  // Use the latest week with workouts as the template and fill every week of next month (each week whose Thursday falls in it).
+  function planDraft() {
+    const weeks = plannedWeeks();
+    if (!weeks.length) return null;
+    const last = weeks[weeks.length - 1];
+    const target = nextMonthKey(last.month);
+    const calls = data.reviews.weeks[last.key]?.calls || {};
+    const mondays = [];
+    let monday = weekStart(parse(`${target}-01`));
+    if (ymd(addDays(monday, 3)).slice(0, 7) !== target) monday = addDays(monday, 7);
+    for (; ymd(addDays(monday, 3)).slice(0, 7) === target; monday = addDays(monday, 7)) mondays.push(monday);
+    const changes = new Map();
+    const items = mondays.flatMap((start) => last.workouts.map((w) => ({
+      id: uid(),
+      title: w.title,
+      date: ymd(addDays(start, (parse(w.date).getDay() + 6) % 7)),
+      type: w.type,
+      duration: null,
+      status: "todo",
+      note: "",
+      exercises: w.exercises.map((e) => {
+        const name = e.name.trim();
+        const dir = { up: 1, down: -1 }[calls[name]] || 0;
+        const next = dir ? shiftTarget(e.target, dir) : e.target;
+        if (next !== e.target) changes.set(`${w.type}:${name}`, `${name} (${TYPES[w.type].label}): ${e.target} → ${next}`);
+        return { id: e.id, name: e.name, sets: e.sets, target: next, done: false };
+      }),
+    })));
+    return { source: last.month, target, week: last, mondays, items, changes: [...changes.values()] };
+  }
+
+  const genButton = (draft) => `<button type="button" class="nbtn" data-act="gen-plan">${icon("plus")}Plan ${monthName(draft.target)} from ${monthName(draft.source)}</button>`;
+
+  // One click plans the month and opens its plan page, with a note and Undo at the top instead of a confirm dialog.
+  let justGenerated = null;
+
+  function generatePlan() {
+    const draft = planDraft();
+    if (!draft || !draft.items.length) return;
+    data.workouts.push(...draft.items);
+    justGenerated = { ...draft, ids: new Set(draft.items.map((w) => w.id)) };
+    cursor = monthOf(parse(`${draft.target}-01`));
+    commit();
+    refreshViews();
+    navigate(`#/plan/${draft.target}`);
+  }
+
+  function undoGenerate() {
+    if (!justGenerated) return;
+    const { ids, source } = justGenerated;
+    data.workouts = data.workouts.filter((w) => !ids.has(w.id));
+    justGenerated = null;
+    cursor = monthOf(parse(`${source}-01`));
+    commit();
+    refreshViews();
+    navigate(`#/plan/${source}`);
+  }
+
+  function generatedNote(key) {
+    const g = justGenerated;
+    if (g?.target !== key) return "";
+    const changes = g.changes.length ? `Rep changes: ${g.changes.map(esc).join("; ")}.` : "All reps carry over.";
+    return `<div class="callout green gen-note">
+        <span class="emoji" aria-hidden="true">✅</span>
+        <div><strong>Planned ${g.mondays.length} weeks and ${g.items.length} workouts from ${monthName(g.source)} Week ${g.week.n}.</strong>
+          <div class="muted">${changes} To add weight or switch to a harder variation, rename the exercise in the workout.</div></div>
+        <button type="button" class="ghost-btn" data-act="undo-gen">Undo</button>
+      </div>`;
+  }
+
+  // Home: one row per month, linking to its training plan and its monthly review (weekly reviews are inside).
+  function renderMonthsHome() {
+    const draft = planDraft();
+    const rows = plannedMonths().map((m) => `<tr>
+        <td class="name">${monthLabel(m)}</td>
+        <td><a class="inline-link" href="#/plan/${m}" data-route>📖 Training plan</a></td>
+        <td><a class="inline-link" href="#/month/${m}" data-route>📋 Monthly review</a></td>
+        <td class="del-cell">${delBtn("del-month", m, `Delete ${monthLabel(m)}`)}</td>
+      </tr>`).join("");
+    $("#plan-links").innerHTML = `<div class="tbl-scroll"><table class="db months-t">
+        <thead><tr>
+          <th><span class="th"><span class="aa">Aa</span>Month</span></th>
+          <th><span class="th">${icon("list")}Plan</span></th>
+          <th><span class="th">${icon("list")}Review</span></th>
+          <th class="del-cell"><span class="sr">Delete</span></th>
+        </tr></thead>
+        <tbody>${rows || '<tr><td colspan="4" class="muted">No training plans yet</td></tr>'}</tbody>
+      </table></div>${draft ? genButton(draft) : ""}`;
+  }
+
+  $("#plans").addEventListener("click", (event) => {
+    const act = event.target.closest("[data-act]");
+    if (act?.dataset.act === "gen-plan") generatePlan();
+    else if (act?.dataset.act === "del-month") deleteMonth(act.dataset.id);
+  });
+
+  // Deleting a month removes its workouts, weekly reviews, and month summary together.
+  async function deleteMonth(m) {
+    const weeks = plannedWeeks().filter((w) => w.month === m);
+    const ids = new Set(weeks.flatMap((w) => w.workouts.map((x) => x.id)));
+    const ok = await ask(`Delete ${monthLabel(m)}?`, `<p>This month's ${ids.size} workouts, weekly reviews, and month summary will be deleted. This can't be undone.</p>`, "Delete", true);
+    if (!ok) return;
+    data.workouts = data.workouts.filter((w) => !ids.has(w.id));
+    weeks.forEach((w) => delete data.reviews.weeks[w.key]);
+    delete data.reviews.months[m];
+    justGenerated = null;
+    commit();
+    refreshViews();
+  }
+
+  function renderPlanPage(key) {
+    subEl.innerHTML = `
+      <div class="sub-icon" aria-hidden="true">📖</div>
+      <h1 class="title">${monthLabel(key)} Training Plan</h1>
+      <div class="props" id="plan-props"></div>
+      <hr class="divider">
+      <p class="para" id="plan-split"></p>
+      <div id="plan-weeks"></div>
+      <div id="plan-next"></div>
+      ${data.start.length ? `<details class="toggle">
+        <summary><span class="tri">${icon("tri")}</span><span><strong>My starting point</strong></span></summary>
+        <ul class="bul">${data.start.map((s) => `<li>${s.label.trim() ? `<strong>${esc(s.label)}:</strong> ` : ""}${esc(s.text)}</li>`).join("")}</ul>
+      </details>` : ""}`;
+    renderPlanBody();
+  }
+
+  function renderPlanBody() {
+    const key = route.key;
+    const weeks = plannedWeeks().filter((w) => w.month === key);
+    const all = weeks.flatMap((w) => w.workouts);
+    // The split comes from this month's workouts: each workout type with the first title it has.
+    const split = Object.keys(TYPES).map((type) => all.find((w) => w.type === type && w.title.trim())).filter(Boolean);
+    $("#plan-split").innerHTML = `${split.length ? `Each week: ${split.map((w) => `${tag(TYPES[w.type])} ${esc(w.title)}`).join(" · ")}. ` : ""}The split, rest, and progression rules are in the Training System doc. Click a row to open a workout, or click ✓ to mark it done.`;
+    $("#plan-props").innerHTML = weeks.length ? `
+      <div class="prop"><span class="prop-name">${icon("planner")}Dates</span><span class="prop-val">${fmtDate(weeks[0].key)} – ${fmtDate(weeks[weeks.length - 1].end)}</span></div>
+      <div class="prop"><span class="prop-name">${icon("list")}Workouts</span><span class="prop-val">${weeks.length} weeks · ${all.length} workouts</span></div>
+      <div class="prop"><span class="prop-name">${icon("trend")}Done</span><span class="prop-val">${doneMeter(all)}</span></div>
+      <div class="prop"><span class="prop-name">${icon("status")}Review</span><span class="prop-val"><a class="inline-link" href="#/month/${key}" data-route>📋 ${monthLabel(key)} Review</a></span></div>` : "";
+    $("#plan-weeks").innerHTML = generatedNote(key) + weeks.map((w) => {
+      const note = data.weekNotes[w.key];
+      const rows = Array.from({ length: 7 }, (_, i) => {
+        const date = ymd(addDays(parse(w.key), i));
+        const day = `<td class="c-dow">${DOW[i]}<span class="muted"> ${md(date)}</span></td>`;
+        const list = w.workouts.filter((x) => x.date === date);
+        if (!list.length) return `<tr>${day}<td colspan="4" class="muted">${esc(data.restDays[i])}</td></tr>`;
+        return list.map((x) => `<tr class="row" tabindex="0" data-id="${esc(x.id)}">${day}
+          <td class="name">${tag(TYPES[x.type])} ${esc(x.title) || '<span class="muted">Untitled</span>'}</td>
+          <td class="ex-list">${x.exercises.filter((e) => e.name.trim()).map((e) => `${esc(e.name)} ${e.sets ?? "—"}×${esc(e.target) || "—"}`).join("<br>")}</td>
+          <td><span class="status-cell">${checkBtn(x)}${tag(STATUS[x.status], true)}</span></td>
+          <td class="del-cell">${delBtn("del-row", x.id, "Delete this workout")}</td>
+        </tr>`).join("");
+      }).join("");
+      const lines = note ? [["Cardio", note.cardio], ["Effort", note.effort], ["Progression", note.progression]].filter(([, text]) => text.trim()) : [];
+      return `<h2 class="h">Week ${w.n}${note?.focus.trim() ? ` · ${esc(note.focus)}` : ""}</h2>
+        <p class="desc">${fmtDate(w.key)} – ${fmtDate(w.end)}</p>
+        ${lines.length ? `<ul class="week-notes">${lines.map(([label, text]) => `<li><strong>${label}:</strong> ${esc(text)}</li>`).join("")}</ul>` : ""}
+        <div class="tbl-scroll"><table class="db wk plan-t">
+          <thead><tr>
+            <th><span class="th">${icon("planner")}Day</span></th>
+            <th><span class="th"><span class="aa">Aa</span>Workout</span></th>
+            <th><span class="th">${icon("list")}Exercises</span></th>
+            <th><span class="th">${icon("status")}Status</span></th>
+            <th class="del-cell"><span class="sr">Delete</span></th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table></div>`;
+    }).join("") || '<p class="desc">No workouts planned this month.</p>';
+    const draft = planDraft();
+    const next = nextMonthKey(key);
+    let nextHtml = '<p class="desc">No plan for next month yet.</p>';
+    if (plannedMonths().includes(next)) {
+      nextHtml = `<a class="page-link" href="#/plan/${next}" data-route><span class="pl-icon" aria-hidden="true">📄</span><span class="pl-title">${monthLabel(next)} Training Plan</span></a>`;
+    } else if (draft?.source === key) {
+      nextHtml = `<p class="desc">Fills ${monthName(draft.target)} with the schedule from this month's last week (Week ${draft.week.n}). Exercises and reps carry over. Exercises marked Step up in that week's review get 1–2 more reps, and Step back gets 1–2 fewer.</p>${genButton(draft)}`;
+    }
+    $("#plan-next").innerHTML = `<h2 class="h">Next month</h2>${nextHtml}`;
+  }
+
+  /* ---------- Sub-page: monthly review ---------- */
+
+  // The monthly review is mostly for reading: completion and weight change are calculated, and the only thing to write is an optional summary.
+  function renderMonthPage(key) {
+    const r = monthReview(key);
+    subEl.innerHTML = `
+      <div class="sub-icon" aria-hidden="true">📋</div>
+      <h1 class="title">${monthLabel(key)} Review</h1>
+      <div class="props" id="month-props"></div>
+      <hr class="divider">
+
+      <h2 class="h">Weekly reviews</h2>
+      <p class="desc">All optional. To step an exercise up or back, open that week and change it there.</p>
+      <div id="month-weeks"></div>
+
+      <h2 class="h">Month summary</h2>
+      <textarea class="text-block" data-mf="summary" rows="1" placeholder="How did this month go? Optional.">${esc(r.summary)}</textarea>`;
+    renderMonthProps();
+    renderMonthWeeks();
+    subEl.querySelectorAll("textarea").forEach(autosize);
+  }
+
+  function renderMonthProps() {
+    const key = route.key;
+    const r = monthReview(key);
+    const weeks = plannedWeeks().filter((w) => w.month === key);
+    const workouts = weeks.flatMap((w) => w.workouts);
+    const c = tally(workouts);
+    const weights = monthWeights(key);
+    const range = weeks.length ? `${fmtDate(weeks[0].key)} – ${fmtDate(weeks[weeks.length - 1].end)}` : monthLabel(key);
+    $("#month-props").innerHTML = `
+      <div class="prop"><span class="prop-name">${icon("planner")}Dates</span><span class="prop-val">${range}</span></div>
+      <div class="prop"><span class="prop-name">${icon("list")}Plan</span><span class="prop-val"><a class="inline-link" href="#/plan/${key}" data-route>📖 ${monthLabel(key)} Training Plan</a></span></div>
+      <div class="prop"><span class="prop-name">${icon("list")}Workouts done</span><span class="prop-val">${workouts.length ? doneMeter(workouts) : '<span class="muted">—</span>'}</span></div>
+      <div class="prop"><span class="prop-name">${icon("trend")}Attendance</span><span class="prop-val">${meter(pct(c.done, c.due))}</span></div>
+      <div class="prop"><span class="prop-name">${icon("trend")}Weight</span><span class="prop-val">${weights.start ?? "—"} → ${weights.end ?? "—"} ${unit()}</span></div>
+`;
+  }
+
+  function renderMonthWeeks() {
+    $("#month-weeks").innerHTML = weeksTable(plannedWeeks().filter((w) => w.month === route.key));
+  }
+
+  function refreshReviews() {
+    renderMonthsHome();
+    if (route.name === "month") {
+      renderMonthProps();
+      renderMonthWeeks();
+    }
+    if (route.name === "plan") renderPlanBody();
+  }
+
+  subEl.addEventListener("input", (event) => {
+    if (route.name !== "month") return;
+    const t = event.target;
+    if (t.dataset.mf !== "summary") return;
+    monthReview(route.key).summary = t.value;
+    autosize(t);
+    commit();
+  });
+  subEl.addEventListener("click", (event) => {
+    const act = event.target.closest("[data-act]");
+    if (act?.dataset.act === "toggle-done") return toggleDone(act.dataset.id);
+    if (act?.dataset.act === "del-row") return deleteWorkout(act.dataset.id);
+    if (act?.dataset.act === "gen-plan") return generatePlan();
+    if (act?.dataset.act === "undo-gen") return undoGenerate();
+    const week = event.target.closest("[data-week]");
+    if (week) return openPeek("week", week.dataset.week);
+    const row = event.target.closest("tr.row[data-id]");
+    if (row) openPeek("workout", row.dataset.id);
+  });
+
+  /* ---------- Routing: #/ home, #/plan/2026-11 training plan, #/month/2026-11 monthly review, #/body weight log ---------- */
+
+  function parseRoute(hash) {
+    if (hash === "#/body") return { name: "body" };
+    const match = /^#\/(plan|month)\/(\d{4}-\d{2})$/.exec(hash || "");
+    return match ? { name: match[1], key: match[2] } : { name: "home" };
+  }
+
+  function renderBodyPage() {
+    subEl.innerHTML = `
+      <div class="sub-icon" aria-hidden="true">⚖️</div>
+      <h1 class="title">Weight Log</h1>
+      <p class="desc">Weigh yourself once a week, at the same time and under the same conditions. Weight moves around within a month, so watch the trend, not a single reading. If you measure your waist, put it in the note.</p>
+      <div id="body-slot"></div>`;
+    $("#body-slot").replaceWith($("#body-parts") || bodyEl.parentElement);
+    renderBody();
+  }
+
+  function applyRoute(hash = location.hash) {
+    const next = parseRoute(hash);
+    if (!(next.name === "plan" && next.key === justGenerated?.target)) justGenerated = null;
+    closePeek();
+    closePop();
+    if (route.name === "home" && next.name !== "home") homeScroll = scrollY;
+    route = next;
+    const onHome = route.name === "home";
+    homeEl.hidden = !onHome;
+    $("#banner").hidden = !onHome;
+    subEl.hidden = onHome;
+    $("#topbar").hidden = onHome;
+    if (onHome) {
+      document.title = "Workout Tracker";
+      subEl.innerHTML = "";
+      refreshReviews();
+      renderWeightChart();
+      // Restore the scroll position right away, so home never shows its top for a frame first.
+      scrollTo(0, homeScroll);
+    } else {
+      const title = route.name === "body" ? "Weight Log" : `${monthLabel(route.key)} ${route.name === "plan" ? "Training Plan" : "Review"}`;
+      document.title = `${title} · Workout Tracker`;
+      const pageIcon = { body: "⚖️", plan: "📖", month: "📋" }[route.name];
+      $("#crumb-current").innerHTML = `<span aria-hidden="true">${pageIcon}</span>${esc(title)}`;
+      if (route.name === "body") renderBodyPage();
+      else if (route.name === "plan") renderPlanPage(route.key);
+      else renderMonthPage(route.key);
+      scrollTo(0, 0);
+    }
+  }
+
+  // Prefer writing the hash, so the browser's Back works. If the host doesn't allow it, switch directly.
+  function navigate(hash) {
+    try {
+      if (location.hash !== hash) location.hash = hash;
+    } catch {
+      // Ignore it and switch directly below.
+    }
+    if (location.hash !== hash) switchRoute(hash);
+  }
+
+  // Page switches animate through the View Transitions API where it's available, and swap instantly elsewhere.
+  // Going home slides back; anything else slides forward. A skipped transition rejects `ready`, which isn't an error here.
+  function switchRoute(hash) {
+    if (!document.startViewTransition) return applyRoute(hash);
+    document.documentElement.dataset.nav = parseRoute(hash ?? location.hash).name === "home" ? "back" : "forward";
+    document.startViewTransition(() => applyRoute(hash)).ready.catch(() => {});
+  }
+
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest("a[data-route]");
+    if (!link) return;
+    event.preventDefault();
+    navigate(link.getAttribute("href"));
+  });
+  addEventListener("hashchange", () => switchRoute());
+
+  /* ---------- Side peek: workout details / weekly review ---------- */
+
+  const exRow = (e) => `<tr data-eid="${esc(e.id)}"${e.done ? ' class="done"' : ""}>
+    <td class="c-chk"><input type="checkbox" class="chk" data-ef="done" aria-label="Done"${e.done ? " checked" : ""}></td>
+    <td><input type="text" data-ef="name" value="${esc(e.name)}" placeholder="Exercise" aria-label="Exercise" autocomplete="off"></td>
+    <td class="c-n"><input type="number" min="0" inputmode="numeric" data-ef="sets" value="${e.sets ?? ""}" aria-label="Sets"></td>
+    <td class="c-t"><input type="text" data-ef="target" value="${esc(e.target)}" aria-label="Target reps" autocomplete="off"></td>
+    <td class="c-d"><button type="button" class="row-del" data-act="del-ex" aria-label="Delete exercise">${icon("x")}</button></td>
+  </tr>`;
+
+  function renderPeek() {
+    if (!peek) return;
+    const back = peekStack[peekStack.length - 1];
+    peekEl.querySelector('[data-act="peek-back"]').hidden = !back;
+    if (back) $("#peek-back-label").textContent = back.kind === "week" ? `${weekName(weekInfo(back.id))} Review` : "Back";
+    peekEl.querySelector('[data-act="del-workout"]').hidden = peek.kind !== "workout";
+    if (peek.kind === "week") renderWeekPeek();
+    else renderWorkoutPeek();
+  }
+
+  function renderWorkoutPeek() {
+    const w = workoutById(peek.id);
+    if (!w) return;
+    peekBody.innerHTML = `
+      <div class="peek-icon" aria-hidden="true">🏋️</div>
+      <input class="peek-title" data-f="title" value="${esc(w.title)}" placeholder="Untitled" aria-label="Workout name" autocomplete="off">
+      <div class="props">
+        <div class="prop"><span class="prop-name">${icon("planner")}Date</span><span class="prop-val"><input type="date" data-f="date" value="${w.date}" aria-label="Date" required></span></div>
+        <div class="prop"><span class="prop-name">${icon("select")}Type</span><span class="prop-val"><span class="tag pick k-${TYPES[w.type].k}" data-pill="type"><select data-f="type" aria-label="Type">${options(TYPES, w.type)}</select></span></span></div>
+        <div class="prop"><span class="prop-name">${icon("clock")}Duration</span><label class="prop-val"><input class="num" type="number" min="0" step="5" inputmode="numeric" data-f="duration" value="${w.duration ?? ""}" placeholder="Empty" aria-label="Duration (minutes)"><span class="unit">min</span></label></div>
+        <div class="prop"><span class="prop-name">${icon("status")}Status</span><span class="prop-val"><span class="tag status pick k-${STATUS[w.status].k}" data-pill="status"><select data-f="status" aria-label="Status">${options(STATUS, w.status)}</select></span></span></div>
+        <div class="prop"><span class="prop-name">${icon("list")}Progress</span><span class="prop-val" id="peek-prog"></span></div>
+      </div>
+      <hr class="divider">
+      <h3 class="blk">Exercises</h3>
+      <div class="tbl-scroll"><table class="ex-table">
+        <thead><tr><th class="c-chk"><span class="sr">Done</span></th><th>Exercise</th><th class="c-n">Sets</th><th class="c-t">Target reps</th><th class="c-d"><span class="sr">Delete</span></th></tr></thead>
+        <tbody>${w.exercises.map(exRow).join("")}</tbody>
+      </table></div>
+      <button type="button" class="add-line" data-act="add-ex">${icon("plus")}Add exercise</button>
+      <h3 class="blk">Notes</h3>
+      <textarea class="peek-note" data-f="note" rows="2" placeholder="How did it feel today?" aria-label="Notes">${esc(w.note)}</textarea>`;
+    renderPeekProgress(w);
+    autosize(peekBody.querySelector(".peek-note"));
+  }
+
+  function renderWeekPeek() {
+    const info = weekInfo(peek.id);
+    const r = weekReview(peek.id);
+    const weight = weekWeight(info);
+    const names = [...new Set(info.workouts.flatMap((w) => w.exercises.map((e) => e.name.trim()).filter(Boolean)))];
+    peekBody.innerHTML = `
+      <div class="peek-icon" aria-hidden="true">📋</div>
+      <h2 class="peek-title">${weekName(info)} Review</h2>
+      <div class="props">
+        <div class="prop"><span class="prop-name">${icon("planner")}Date</span><span class="prop-val">${fmtDate(info.key)} – ${fmtDate(info.end)}</span></div>
+        <div class="prop"><span class="prop-name">${icon("list")}Workouts done</span><span class="prop-val">${info.workouts.length ? doneMeter(info.workouts) : '<span class="muted">—</span>'}</span></div>
+        <div class="prop"><span class="prop-name">${icon("trend")}Weigh-in</span><span class="prop-val">${weight != null ? `${weight} ${unit()}` : '<span class="muted">Not logged yet</span>'}</span></div>
+      </div>
+      <hr class="divider">
+      <h3 class="blk">This week's workouts</h3>
+      <div class="rel">${info.workouts.map((w) => `<div class="rel-row" role="button" tabindex="0" data-open="${esc(w.id)}">
+          ${icon("dumbbell")}<span class="rel-title">${esc(w.title) || "Untitled"}</span>${tag(STATUS[w.status], true)}<span class="rel-date">${fmtDate(w.date)}</span>
+        </div>`).join("") || '<p class="desc">No workouts this week.</p>'}</div>
+      <h3 class="blk">Exercise changes</h3>
+      ${names.length ? `<p class="desc">Everything stays at Keep. Only change the exercises to step up or step back. Next month's plan adjusts reps from here.</p>
+        <div class="tbl-scroll"><table class="ex-table"><tbody>${names.map((name) => `<tr>
+          <td>${esc(name)}</td>
+          <td class="c-call"><span class="tag pick k-${CALLS[r.calls[name] || "keep"].k}"><select data-call="${esc(name)}" aria-label="${esc(name)}: next week">${options(CALLS, r.calls[name] || "keep")}</select></span></td>
+        </tr>`).join("")}</tbody></table></div>` : '<p class="desc">No exercises in this week\'s workouts yet.</p>'}
+      <h3 class="blk">Takeaway</h3>
+      <textarea class="peek-note" data-wf="conclusion" rows="2" placeholder="One line is enough. Optional." aria-label="Takeaway">${esc(r.conclusion)}</textarea>`;
+    peekBody.querySelectorAll(".peek-note").forEach(autosize);
+  }
+
+  function renderPeekProgress(w) {
+    const done = w.exercises.filter((e) => e.done).length;
+    $("#peek-prog").innerHTML = w.exercises.length
+      ? `${meter(pct(done, w.exercises.length))}<span class="muted">${done} / ${w.exercises.length} exercises</span>`
+      : '<span class="muted">—</span>';
+  }
+
+  function syncPills(w) {
+    const typePill = peekBody.querySelector('[data-pill="type"]');
+    const statusPill = peekBody.querySelector('[data-pill="status"]');
+    typePill.className = `tag pick k-${TYPES[w.type].k}`;
+    statusPill.className = `tag status pick k-${STATUS[w.status].k}`;
+    statusPill.querySelector("select").value = w.status;
+  }
+
+  function autosize(textarea) {
+    textarea.style.height = "auto";
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  }
+
+  // Checking off exercises only moves the status forward: first check → In progress, all checked → Done.
+  function autoStatus(w) {
+    const done = w.exercises.filter((e) => e.done).length;
+    if (!done || w.status === "done" || w.status === "skipped") return;
+    if (done === w.exercises.length) w.status = "done";
+    else if (w.status === "todo") w.status = "doing";
+  }
+
+  function isBlank(w) {
+    return !w.title.trim() && !w.note.trim() && !w.duration && !w.exercises.some((e) => e.name.trim());
+  }
+
+  // A new workout left blank is discarded when you leave it, so the calendar doesn't fill up with "Untitled".
+  function discardIfBlank(item) {
+    if (item?.kind !== "workout") return;
+    const index = data.workouts.findIndex((w) => w.id === item.id);
+    if (index < 0 || !isBlank(data.workouts[index])) return;
+    data.workouts.splice(index, 1);
+    commit();
+    refreshViews();
+  }
+
+  // With push, remember where we came from (a workout opened from a weekly review) and show a Back button at the top.
+  function openPeek(kind, id, push = false) {
+    const previous = peek;
+    if (push && previous) peekStack.push(previous);
+    else peekStack.length = 0;
+    peek = { kind, id };
+    if (!push && previous && previous.id !== id) discardIfBlank(previous);
+    renderPeek();
+    peekBody.scrollTop = 0;
+    peekEl.classList.add("open");
+    peekEl.removeAttribute("inert");
+    const w = kind === "workout" ? workoutById(id) : null;
+    if (w && !w.title) peekBody.querySelector(".peek-title").focus();
+    else peekEl.querySelector('[data-act="close-peek"]').focus({ preventScroll: true });
+  }
+
+  function peekBack() {
+    const previous = peekStack.pop();
+    if (!previous) return;
+    const current = peek;
+    peek = previous;
+    discardIfBlank(current);
+    renderPeek();
+    peekBody.scrollTop = 0;
+  }
+
+  function closePeek() {
+    if (!peek) return;
+    const current = peek;
+    peek = null;
+    peekStack.length = 0;
+    peekEl.classList.remove("open");
+    peekEl.setAttribute("inert", "");
+    discardIfBlank(current);
+  }
+
+  function addExercise(w, afterId) {
+    const index = afterId ? w.exercises.findIndex((e) => e.id === afterId) + 1 : w.exercises.length;
+    const exercise = { id: uid(), name: "", sets: 3, target: "", done: false };
+    w.exercises.splice(index || w.exercises.length, 0, exercise);
+    commit();
+    renderPeek();
+    refreshViews();
+    peekBody.querySelector(`[data-eid="${CSS.escape(exercise.id)}"] [data-ef="name"]`)?.focus();
+  }
+
+  const exerciseOf = (w, el) => w.exercises.find((e) => e.id === el.closest("tr")?.dataset.eid);
+
+  peekEl.addEventListener("input", (event) => {
+    const t = event.target;
+    if (peek?.kind === "week") {
+      if (t.dataset.wf !== "conclusion") return;
+      weekReview(peek.id)[t.dataset.wf] = t.value;
+      autosize(t);
+      commit();
+      refreshReviews();
+      return;
+    }
+    const w = peek && workoutById(peek.id);
+    if (!w) return;
+    if (t.dataset.f === "title") w.title = t.value;
+    else if (t.dataset.f === "note") {
+      w.note = t.value;
+      autosize(t);
+    } else if (t.dataset.f === "duration") {
+      const value = num(t.value);
+      w.duration = value != null && value > 0 ? value : null;
+    } else if (t.dataset.ef && t.dataset.ef !== "done") {
+      const exercise = exerciseOf(w, t);
+      if (!exercise) return;
+      exercise[t.dataset.ef] = t.dataset.ef === "sets" ? num(t.value) : t.value;
+    } else return;
+    commit();
+    refreshViews();
+  });
+
+  peekEl.addEventListener("change", (event) => {
+    const t = event.target;
+    if (peek?.kind === "week") {
+      const r = weekReview(peek.id);
+      if (t.dataset.call != null) {
+        if (t.value !== "keep") r.calls[t.dataset.call] = t.value;
+        else delete r.calls[t.dataset.call];
+        t.parentElement.className = `tag pick k-${CALLS[t.value].k}`;
+      } else return;
+      commit();
+      refreshReviews();
+      return;
+    }
+    const w = peek && workoutById(peek.id);
+    if (!w) return;
+    if (t.dataset.f === "date") {
+      if (!isDate(t.value)) {
+        t.value = w.date;
+        return;
+      }
+      w.date = t.value;
+    } else if (t.dataset.f === "type") w.type = t.value;
+    else if (t.dataset.f === "status") w.status = t.value;
+    else if (t.dataset.ef === "done") {
+      const exercise = exerciseOf(w, t);
+      if (!exercise) return;
+      exercise.done = t.checked;
+      t.closest("tr").classList.toggle("done", t.checked);
+      autoStatus(w);
+      renderPeekProgress(w);
+    } else return;
+    syncPills(w);
+    commit();
+    refreshViews();
+  });
+
+  peekEl.addEventListener("click", async (event) => {
+    const act = event.target.closest("[data-act]")?.dataset.act;
+    if (act === "close-peek") return closePeek();
+    if (act === "peek-back") return peekBack();
+    const related = event.target.closest("[data-open]");
+    if (related) return openPeek("workout", related.dataset.open, true);
+    const w = peek?.kind === "workout" ? workoutById(peek.id) : null;
+    if (!w) return;
+    if (act === "add-ex") addExercise(w);
+    else if (act === "del-ex") {
+      const row = event.target.closest("tr");
+      w.exercises = w.exercises.filter((e) => e.id !== row.dataset.eid);
+      row.remove();
+      renderPeekProgress(w);
+      commit();
+      refreshViews();
+    } else if (act === "del-workout") {
+      if (!isBlank(w) && !(await ask("Delete this workout?", `<p>“${esc(w.title || "Untitled")}” (${fmtDate(w.date)}) will be deleted. This can't be undone.</p>`, "Delete", true))) return;
+      if (!workoutById(w.id)) return;
+      data.workouts = data.workouts.filter((x) => x.id !== w.id);
+      commit();
+      refreshViews();
+      if (peekStack.length) {
+        peek = peekStack.pop();
+        renderPeek();
+      } else {
+        peek = null;
+        peekEl.classList.remove("open");
+        peekEl.setAttribute("inert", "");
+      }
+    }
+  });
+
+  peekEl.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" || event.isComposing || event.keyCode === 229) return;
+    const t = event.target;
+    const w = peek?.kind === "workout" ? workoutById(peek.id) : null;
+    if (!w) return;
+    if (t.matches(".peek-title")) {
+      event.preventDefault();
+      const first = peekBody.querySelector('[data-ef="name"]');
+      if (first) first.focus();
+      else addExercise(w);
+    } else if (t.matches('input[data-ef="name"], input[data-ef="sets"], input[data-ef="target"]')) {
+      event.preventDefault();
+      addExercise(w, t.closest("tr").dataset.eid);
+    }
+  });
+
+  document.addEventListener("pointerdown", (event) => {
+    const t = event.target;
+    if (popFor && !popEl.contains(t) && !t.closest("#filter-btn, #sort-btn")) closePop();
+    if (peek && !peekEl.contains(t) && !t.closest('.card, tr.row, [data-week], [data-act="add"], [data-act="add-on"], .save-toast, #pop, .modal')) closePeek();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    if (!modalEl.hidden) closeModal(false);
+    else if (popFor) closePop();
+    else if (peek) closePeek();
+  });
+
+  /* ---------- Weight chart: one line, with the goal as a dashed line. Hover or tap to see each date and weight. ---------- */
+
+  const chartEl = $("#weight-chart");
+
+  function renderWeightChart() {
+    const points = sortedBody().filter((r) => r.weight != null && r.date);
+    const target = data.targetWeight;
+    if (!points.length) {
+      chartEl.innerHTML = '<p class="desc">Log your weight and the trend shows up here.</p>';
+      return;
+    }
+    const width = Math.max(260, Math.round(chartEl.clientWidth || 320));
+    const height = 190;
+    const pad = { top: 24, right: 12, bottom: 26, left: 30 };
+    const times = points.map((p) => parse(p.date).getTime());
+    let minX = times[0];
+    let maxX = times[times.length - 1];
+    if (minX === maxX) {
+      minX -= 3 * 864e5;
+      maxX += 3 * 864e5;
+    }
+    const values = points.map((p) => p.weight).concat(target != null ? [target] : []);
+    const lo = Math.floor(Math.min(...values) - 0.5);
+    let hi = Math.ceil(Math.max(...values) + 0.5);
+    const step = Math.max(1, Math.ceil((hi - lo) / 4));
+    hi = lo + step * Math.ceil((hi - lo) / step);
+    const x = (t) => pad.left + ((t - minX) / (maxX - minX)) * (width - pad.left - pad.right);
+    const y = (v) => pad.top + ((hi - v) / (hi - lo)) * (height - pad.top - pad.bottom);
+    const xs = times.map(x);
+    const last = points[points.length - 1];
+    let svg = "";
+    for (let v = lo; v <= hi; v += step) {
+      svg += `<line class="ch-grid" x1="${pad.left}" x2="${width - pad.right}" y1="${y(v)}" y2="${y(v)}"/>`
+        + `<text class="ch-tick" x="${pad.left - 6}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
+    }
+    if (target != null) {
+      svg += `<line class="ch-target" x1="${pad.left}" x2="${width - pad.right}" y1="${y(target)}" y2="${y(target)}"/>`
+        + `<text class="ch-target-label" x="${width - pad.right}" y="${y(target) - 5}" text-anchor="end">Goal ${target}</text>`;
+    }
+    // Date labels sit at least 44px apart, and the latest one always shows.
+    const ticks = [];
+    xs.forEach((px, i) => {
+      if (!ticks.length || px - xs[ticks[ticks.length - 1]] >= 44) ticks.push(i);
+      else if (i === xs.length - 1) ticks[ticks.length - 1] = i;
+    });
+    svg += ticks.map((i) => `<text class="ch-tick" x="${xs[i]}" y="${height - 6}" text-anchor="middle">${md(points[i].date)}</text>`).join("");
+    if (points.length > 1) {
+      svg += `<polyline class="ch-line" points="${xs.map((px, i) => `${px.toFixed(1)},${y(points[i].weight).toFixed(1)}`).join(" ")}"/>`;
+    }
+    svg += `<line class="ch-cross" x1="0" x2="0" y1="${pad.top}" y2="${height - pad.bottom}" visibility="hidden"/>`;
+    svg += xs.map((px, i) => `<circle class="ch-dot" cx="${px}" cy="${y(points[i].weight)}" r="4"/>`).join("");
+    const lastX = xs[xs.length - 1];
+    svg += `<text class="ch-last" x="${lastX}" y="${y(last.weight) - 10}" text-anchor="${lastX > width - 40 ? "end" : "middle"}">${last.weight}</text>`;
+    chartEl.innerHTML = `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Weight: ${points.length} entries, latest ${last.weight} ${unit()}">${svg}</svg><div class="ch-tip" hidden></div>`;
+
+    const svgEl = chartEl.querySelector("svg");
+    const tip = chartEl.querySelector(".ch-tip");
+    const cross = svgEl.querySelector(".ch-cross");
+    const show = (event) => {
+      const box = svgEl.getBoundingClientRect();
+      const px = ((event.clientX - box.left) / box.width) * width;
+      let i = 0;
+      xs.forEach((v, k) => { if (Math.abs(v - px) < Math.abs(xs[i] - px)) i = k; });
+      cross.setAttribute("x1", xs[i]);
+      cross.setAttribute("x2", xs[i]);
+      cross.removeAttribute("visibility");
+      tip.hidden = false;
+      tip.textContent = `${fmtDate(points[i].date)} · ${points[i].weight} ${unit()}`;
+      const half = tip.offsetWidth / 2;
+      tip.style.left = `${Math.min(Math.max((xs[i] / width) * box.width, half), box.width - half)}px`;
+      tip.style.top = `${(y(points[i].weight) / height) * box.height - 8}px`;
+    };
+    svgEl.addEventListener("pointermove", show);
+    svgEl.addEventListener("pointerdown", show);
+    svgEl.addEventListener("pointerleave", () => {
+      tip.hidden = true;
+      cross.setAttribute("visibility", "hidden");
+    });
+  }
+
+  let chartFrame = 0;
+  addEventListener("resize", () => {
+    cancelAnimationFrame(chartFrame);
+    chartFrame = requestAnimationFrame(() => route.name === "home" && renderWeightChart());
+  });
+
+  /* ---------- Check-in stats ---------- */
+
+  // Attendance = done ÷ workouts due by today (workouts still ahead don't count as missed).
+  function tally(list) {
+    const t = today();
+    const done = list.filter((w) => w.status === "done");
+    return {
+      planned: list.length,
+      due: list.filter((w) => w.date <= t || w.status === "done").length,
+      done: done.length,
+      minutes: done.reduce((sum, w) => sum + (w.duration || 0), 0),
+    };
+  }
+
+  function renderStats() {
+    document.querySelectorAll("[data-stat]").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.stat === statView)));
+    if (statView === "stats") {
+      const now = new Date();
+      const weekFrom = ymd(weekStart(now));
+      const weekTo = ymd(addDays(weekStart(now), 6));
+      const month = today().slice(0, 7);
+      const cols = [
+        tally(data.workouts),
+        tally(data.workouts.filter((w) => w.date >= weekFrom && w.date <= weekTo)),
+        tally(data.workouts.filter((w) => w.date.startsWith(month))),
+      ];
+      statsEl.innerHTML = `<div class="tbl-scroll"><table class="db">
+        <thead><tr>
+          <th><span class="th"><span class="aa">Aa</span>Name</span></th>
+          <th><span class="th">${icon("trend")}All time</span></th>
+          <th><span class="th">${icon("planner")}This week</span></th>
+          <th><span class="th">${icon("planner")}This month</span></th>
+        </tr></thead>
+        <tbody>
+          <tr><td>Attendance</td>${cols.map((c) => `<td>${meter(pct(c.done, c.due))}</td>`).join("")}</tr>
+          <tr><td>Done</td>${cols.map((c) => `<td>${c.done} / ${c.planned}</td>`).join("")}</tr>
+          <tr><td>Training time</td>${cols.map((c) => `<td>${c.minutes ? fmtDur(c.minutes) : '<span class="muted">—</span>'}</td>`).join("")}</tr>
+        </tbody>
+      </table></div>`;
+      return;
+    }
+    const groups = {};
+    for (const w of data.workouts) (groups[w.date.slice(0, 7)] ||= []).push(w);
+    const rows = Object.keys(groups).sort().map((key) => {
+      const c = tally(groups[key]);
+      return `<tr><td>${monthLabel(key)}</td><td>${c.planned}</td><td>${c.done}</td><td>${meter(pct(c.done, c.due))}</td></tr>`;
+    });
+    statsEl.innerHTML = `<div class="tbl-scroll"><table class="db">
+      <thead><tr>
+        <th><span class="th"><span class="aa">Aa</span>Month</span></th>
+        <th><span class="th">${icon("list")}Planned</span></th>
+        <th><span class="th">${icon("check")}Done</span></th>
+        <th><span class="th">${icon("trend")}Attendance</span></th>
+      </tr></thead>
+      <tbody>${rows.join("") || '<tr><td colspan="4" class="muted">No workouts yet</td></tr>'}</tbody>
+    </table></div>`;
+  }
+
+  statsEl.previousElementSibling.addEventListener("click", (event) => {
+    const tab = event.target.closest("[data-stat]");
+    if (!tab) return;
+    statView = tab.dataset.stat;
+    renderStats();
+  });
+
+  /* ---------- Body data ---------- */
+
+  // On the home page, only the chart depends on weight data.
+  function renderBodySummary() {
+    renderWeightChart();
+  }
+
+  const bodyRow = (r) => `<tr data-id="${esc(r.id)}">
+    <td class="c-date"><input class="cell-in" type="date" data-bf="date" value="${r.date}" aria-label="Date"></td>
+    <td class="c-num"><input class="cell-in" type="number" step="0.1" min="0" inputmode="decimal" data-bf="weight" value="${r.weight ?? ""}" aria-label="Weight"></td>
+    <td class="c-note"><input class="cell-in" type="text" data-bf="note" value="${esc(r.note)}" aria-label="Note" autocomplete="off"></td>
+    <td class="del-cell"><button type="button" class="row-del" data-act="del-body" aria-label="Delete this row">${icon("x")}</button></td>
+  </tr>`;
+
+  function renderBody() {
+    targetEl.value = data.targetWeight ?? "";
+    $("#target-unit").textContent = unit();
+    bodyEl.innerHTML = `<div class="tbl-scroll"><table class="db body-t">
+      <thead><tr>
+        <th><span class="th">${icon("planner")}Date</span></th>
+        <th><span class="th">${icon("trend")}Weight</span></th>
+        <th><span class="th"><span class="aa">Aa</span>Note</span></th>
+        <th><span class="sr">Delete</span></th>
+      </tr></thead>
+      <tbody>
+        ${sortedBody().map(bodyRow).join("")}
+        <tr class="newrow"><td colspan="6"><button type="button" data-act="add-body">${icon("plus")}New</button></td></tr>
+      </tbody>
+    </table></div>`;
+    renderBodySummary();
+  }
+
+  const bodyOf = (el) => data.body.find((r) => r.id === el.closest("tr")?.dataset.id);
+
+  bodyEl.addEventListener("input", (event) => {
+    const t = event.target;
+    const row = bodyOf(t);
+    if (!row || !t.dataset.bf || t.dataset.bf === "date") return;
+    row[t.dataset.bf] = t.dataset.bf === "note" ? t.value : num(t.value);
+    commit();
+    if (t.dataset.bf === "weight") {
+      renderBodySummary();
+      renderMonthsHome();
+    }
+  });
+  bodyEl.addEventListener("change", (event) => {
+    const t = event.target;
+    const row = bodyOf(t);
+    if (!row || t.dataset.bf !== "date") return;
+    row.date = isDate(t.value) ? t.value : "";
+    commit();
+    renderBody();
+    renderMonthsHome();
+  });
+  bodyEl.addEventListener("click", async (event) => {
+    const act = event.target.closest("[data-act]")?.dataset.act;
+    if (act === "add-body") {
+      const row = { id: uid(), date: today(), weight: null, note: "" };
+      data.body.push(row);
+      commit();
+      renderBody();
+      bodyEl.querySelector(`[data-id="${CSS.escape(row.id)}"] [data-bf="weight"]`)?.focus();
+    } else if (act === "del-body") {
+      const row = bodyOf(event.target);
+      if (!row) return;
+      const filled = row.weight != null || row.note.trim();
+      if (filled && !(await ask("Delete this row?", `<p>${row.date ? `The entry for ${fmtDate(row.date)}` : "This entry"} will be deleted. This can't be undone.</p>`, "Delete", true))) return;
+      data.body = data.body.filter((r) => r !== row);
+      commit();
+      renderBody();
+      renderMonthsHome();
+    }
+  });
+  targetEl.addEventListener("input", () => {
+    const value = num(targetEl.value);
+    data.targetWeight = value != null && value > 0 ? value : null;
+    commit();
+    renderBodySummary();
+  });
+
+  /* ---------- Start ---------- */
+
+  function renderAll() {
+    renderDb();
+    renderStats();
+    renderBody();
+    renderMonthsHome();
+    renderSaveState();
+  }
+
+  async function start() {
+    document.querySelectorAll("[data-icon]").forEach((n) => n.insertAdjacentHTML("afterbegin", icon(n.dataset.icon)));
+    try {
+      if (api && ["load", "update", "save"].every((key) => typeof api[key] === "function")) {
+        data = normalize(await api.load(DATA_PATH));
+        canSave = true;
+      } else {
+        try {
+          const response = await fetch(DATA_PATH);
+          if (response.ok) data = normalize(await response.json());
+        } catch {
+          // Opened straight in a browser, the page can't read the JSON, so it previews with empty data.
+        }
+      }
+    } catch (error) {
+      loadError = `Couldn't load data: ${error?.message || error}`;
+    }
+    // Open on the month of the next workout that isn't done.
+    const t = today();
+    const next = data.workouts.filter((w) => w.date >= t && w.status !== "done").sort(byDate)[0];
+    cursor = monthOf(next ? parse(next.date) : new Date());
+    renderAll();
+    applyRoute();
+  }
+
+  // There's no console in StashBase, so script errors show at the bottom right, ready to pass on.
+  function showProblem(message) {
+    const el = $("#save-state");
+    el.textContent = message;
+    el.setAttribute("data-error", "");
+    $("#retry").hidden = true;
+    $("#save-toast").hidden = false;
+  }
+  // Include the line number so the error can be traced. ResizeObserver loop messages are harmless browser notices, so skip them.
+  const lineOf = (stack) => /:(\d+):\d+\)?\s*$/m.exec(String(stack || "").split("\n")[1] || "")?.[1];
+  addEventListener("error", (event) => {
+    if (/ResizeObserver loop/i.test(event.message || "")) return;
+    const line = event.lineno || lineOf(event.error?.stack);
+    showProblem(`Page error: ${event.message || "unknown error"}${line ? ` (line ${line})` : ""}`);
+  });
+  addEventListener("unhandledrejection", (event) => {
+    const reason = event.reason;
+    const line = lineOf(reason?.stack);
+    showProblem(`Page error: ${reason?.message || reason}${line ? ` (line ${line})` : ""}`);
+  });
+  $("#toast-close").addEventListener("click", () => {
+    $("#save-toast").hidden = true;
+  });
+
+  $("#retry").addEventListener("click", () => {
+    saveError = "";
+    save();
+  });
+  addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") save();
+  });
+  addEventListener("beforeunload", (event) => {
+    if (canSave && (saving || savedRevision !== revision)) {
+      event.preventDefault();
+      event.returnValue = "";
+    }
+  });
+
+  start();
+})();
+</script>
+</body>
+</html>
